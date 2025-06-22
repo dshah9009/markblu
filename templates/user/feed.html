@@ -113,189 +113,143 @@
 
 </body>
 </html> -->
+
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Real Estate Reels</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet" />
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #111827;
-            color: #f3f4f6;
-        }
-
-        .reel-container {
-            scroll-snap-type: y mandatory;
-            overflow-y: scroll;
-            height: 100vh;
-            width: 100%;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-        }
-
-        .reel-container::-webkit-scrollbar {
-            display: none;
-        }
-
-        .reel {
-            scroll-snap-align: start;
-            height: 100vh;
-            width: 100%;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-        }
-
-        video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -1;
-        }
-
-        .reel-content {
-            position: relative;
-            z-index: 1;
-            padding: 16px;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%);
-        }
-
-        .message {
-            text-align: center;
-            padding: 20px;
-            background-color: #1f2937;
-            color: #d1d5db;
-        }
-
-        .actions-sidebar {
-            position: absolute;
-            right: 16px;
-            bottom: 100px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            z-index: 2;
-        }
-
-        .action-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-            color: white;
-            font-size: 0.75rem;
-        }
-
-        .action-item .material-icons {
-            font-size: 2rem;
-            margin-bottom: 4px;
-        }
-    </style>
-    <style>
-        body {
-            min-height: max(884px, 100dvh);
-        }
-    </style>
-    <style>
-        body {
-            min-height: max(884px, 100dvh);
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MarkBlu Reels</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #000;
+      color: #fff;
+      margin: 0;
+    }
+    .reel-container {
+      height: 100vh;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+    .reel {
+      height: 100vh;
+      scroll-snap-align: start;
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .reel video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background-color: #000;
+      z-index: 0;
+      cursor: pointer;
+    }
+    .top-left-info {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      z-index: 10;
+      font-size: 0.85rem;
+      color: white;
+      line-height: 1.5;
+    }
+    .reel-content {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent);
+    }
+    .actions-sidebar {
+      position: absolute;
+      right: 1rem;
+      bottom: 6rem;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      align-items: center;
+    }
+    .action-item {
+      font-size: 0.75rem;
+      text-align: center;
+      color: white;
+    }
+    .action-item .material-icons {
+      font-size: 2rem;
+      margin-bottom: 4px;
+    }
+    .message {
+      padding: 1rem;
+      text-align: center;
+      background: #1f2937;
+      color: #d1d5db;
+    }
+  </style>
 </head>
-
 <body>
-    {% if no_results %}
-    <p class="message">No exact matches found. Showing similar properties:</p>
-    {% endif %}
-    <div class="reel-container relative">
-        {% for video in videos %}
-        <div class="reel relative w-full h-screen overflow-hidden">
 
-            <!-- 🟦 Fixed Top-Left Info -->
-            <div class="absolute top-4 left-4 z-10 text-sm text-white space-y-1">
-                <div class="flex items-center">
-                    <span class="material-icons text-base">location_on</span>
-                    <span class="ml-1">{{ video.city }}</span>
-                </div>
-                <div class="flex items-center">
-                    <span class="material-icons text-base transform scale-y-[-1]">trending_flat</span>
-                    <span class="ml-1">{{ video.area }}</span>
-                </div>
-                <div class="flex items-center">
-                    <span class="material-icons text-base transform scale-y-[-1]">trending_flat</span>
-                    <span class="ml-1"><strong>₹{{ video.price_min }} - ₹{{ video.price_max }} Lakh</strong></span>
-                </div>
-                <div class="flex items-center">
-                    <span class="material-icons text-base transform scale-y-[-1]">trending_flat</span>
-                    <span class="ml-1">{{ video.property_type }}</span>
-                </div>
-            </div>
+{% if no_results %}
+  <p class="message">No exact matches found. Showing similar properties:</p>
+{% endif %}
 
-            <!-- 🎥 Background Video -->
-            <video class="w-full h-full object-cover" autoplay muted loop playsinline>
-                <source src="{{ video.video.url }}" type="video/mp4" />
-                Your browser does not support the video tag.
-            </video>
+<div class="reel-container">
+  {% for video in videos %}
+  <div class="reel">
+    <!-- 🎥 Video with click-to-mute -->
+    <video autoplay loop playsinline onclick="this.muted = !this.muted">
+      <source src="{{ video.video.url }}" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
 
-            <!-- 🟨 Reel Info at Bottom -->
-            <div
-                class="reel-content absolute bottom-4 left-4 right-4 text-white text-sm z-10 bg-gradient-to-t from-black/80 to-transparent p-4 rounded-lg">
-                <div class="mb-2">
-                    <span class="bg-green-500 text-white px-2 py-1 rounded text-xs">RERA Approved</span>
-                    <span class="bg-gray-700 text-white px-2 py-1 rounded text-xs ml-2">Token: ₹{{ video.token_amount
-                        }}</span>
-                </div>
-                <p><strong>Broker:</strong> {{ video.agent.user.first_name }} {{ video.agent.user.last_name }}</p>
-                <p><strong>Project:</strong> {{ video.agent.project_location }}</p>
-                <p>Market Price: ₹{{ video.market_price_per_sqft }}/sqft</p>
-                <p>Size: {{ video.property_size_sqft }} sqft</p>
-
-                {% if user.is_authenticated %}
-                <a href="tel:{{ video.agent.mobile }}"
-                    class="mt-3 inline-block bg-blue-600 px-4 py-2 rounded-full text-white text-center">Call Broker</a>
-                {% else %}
-                <a href="{% url 'user-login' %}?next={{ request.get_full_path|urlencode }}"
-                    class="mt-3 inline-block bg-blue-600 px-4 py-2 rounded-full text-white text-center">Call Broker</a>
-                {% endif %}
-            </div>
-
-        </div>
+    <!-- 📍 Top Left Info -->
+    <div class="top-left-info">
+      <div><span class="material-icons text-sm">location_on</span> {{ video.city }}</div>
+      <div><span class="material-icons text-sm transform scale-y-[-1]">trending_flat</span> {{ video.area }}</div>
+      <div><span class="material-icons text-sm transform scale-y-[-1]">trending_flat</span> ₹{{ video.price_min }} - ₹{{ video.price_max }} Lakh</div>
+      <div><span class="material-icons text-sm transform scale-y-[-1]">trending_flat</span> {{ video.property_type }}</div>
+      <div><span class="material-icons text-sm transform scale-y-[-1]">trending_flat</span> {{ video.properties }}</div>
     </div>
 
-    <div class="reel-footer">
-        {% if user.is_authenticated %} {% else %} {% endif %}
+    <!-- 📦 Bottom Info -->
+    <div class="reel-content text-sm">
+      <div class="mb-2">
+        <span class="bg-green-500 text-white px-2 py-1 rounded text-xs">RERA Approved</span>
+        <span class="bg-gray-700 text-white px-2 py-1 rounded text-xs ml-2">Token: ₹{{ video.token_amount }}</span>
+      </div>
+      <p><strong>Broker details</Details>:</strong> {{ video.agent.user.first_name }} {{ video.agent.user.last_name }}</p>
+      <p><strong>Project details</Details>:</strong> {{ video.agent.company_name }}</p>
+      <p><strong>Price</Details>:</strong>{{video.price}}</p>
+      <p>Market Price: ₹{{ video.market_price_per_sqft }}/sqft</p>
+      <p>Size: {{ video.property_size_sqft }} sqft</p>
     </div>
-    </div>
+
+    <!-- 🔘 Sidebar Actions -->
     <div class="actions-sidebar">
-        <div class="action-item"
-            onclick="{% if user.is_authenticated %}window.location.href='tel:{{ video.agent.mobile }}'{% else %}window.location.href='{% url 'user-login' %}?next={{ request.get_full_path|urlencode }}'{% endif %}">
-            <span class="material-icons">call</span> Call Broker
-        </div>
-        <div class="action-item">
-            <span class="material-icons">event</span> Schedule Call/Meeting
-        </div>
-        <div class="action-item">
-            <span class="material-icons">bookmark_border</span> Save for later
-        </div>
-        <div class="action-item">
-            <span class="material-icons">location_on</span> Location
-        </div>
+      <div class="action-item"
+        onclick="{% if user.is_authenticated %}window.location.href='tel:{{ video.agent.mobile }}'{% else %}window.location.href='{% url 'user-login' %}?next={{ request.get_full_path|urlencode }}'{% endif %}">
+        <span class="material-icons">call</span> Call Broker
+      </div>
+      <div class="action-item"><span class="material-icons">event</span> Schedule</div>
+      <div class="action-item"><span class="material-icons">bookmark_border</span> Save</div>
+      <div class="action-item"><span class="material-icons">location_on</span> Location</div>
     </div>
-    </div>
-    {% endfor %}
-    </div>
+
+  </div>
+  {% endfor %}
+</div>
 
 </body>
-
 </html>

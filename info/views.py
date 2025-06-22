@@ -15,17 +15,25 @@ def user_filter_page(request):
         price_min = request.POST.get("price_min", "")
         price_max = request.POST.get("price_max", "")
         property_type = request.POST.get("property_type", "")
+        properties = request.POST.get("properties", "")
 
-        query = f"?city={city}&area={area}&price_min={price_min}&price_max={price_max}&property_type={property_type}"
+
+
+        query = f"?city={city}&area={area}&price_min={price_min}&price_max={price_max}&property_type={property_type}&properties={properties}"
         return redirect('/feed/' + query)
 
     # Get distinct values from uploaded videos
     cities = PropertyVideo.objects.values_list('city', flat=True).distinct()
     areas = PropertyVideo.objects.values_list('area', flat=True).distinct()
+   # properties = PropertyVideo.objects.values_list('properties', flat=True).distinct()
+    properties_choices = PropertyVideo._meta.get_field('properties').choices
+
+
 
     return render(request, 'user/filter.html', {
         'cities': cities,
-        'areas': areas
+        'areas': areas,
+        'properties_choices' : properties_choices
     })
  
 
