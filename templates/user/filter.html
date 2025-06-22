@@ -1,0 +1,157 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MarkBlu Filter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f5f5f5;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: auto;
+      background-color: #fff;
+      border-radius: 12px;
+      padding: 25px 20px;
+    }
+
+    .logo {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 25px;
+    }
+
+    .logo img {
+      height: 60px;
+    }
+
+    .toggle-buttons {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .toggle-buttons button {
+      flex: 1;
+      padding: 12px 0;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      background-color: #fff;
+      margin-right: 10px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      color: #333;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .toggle-buttons button:last-child {
+      margin-right: 0;
+    }
+
+    .toggle-buttons .active {
+      background-color: #003f7f;
+      color: white;
+    }
+
+    select {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      border-radius: 10px;
+      background-color: white;
+      color: #333;
+      margin-bottom: 16px;
+      border: none;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20fill%3D%22%23444%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M7%208l5%205%205-5z%22/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 16px;
+    }
+
+    .search-btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: bold;
+      background-color: #003f7f;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      margin-top: 15px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .search-btn:hover {
+      background-color: #002f5f;
+    }
+  </style>
+
+  <script>
+    function setType(type) {
+      document.getElementById("property_type").value = type;
+      document.getElementById("btn-rent").classList.remove("active");
+      document.getElementById("btn-buy").classList.remove("active");
+      document.getElementById("btn-" + type.toLowerCase()).classList.add("active");
+    }
+  </script>
+</head>
+<body>
+
+  <div class="container">
+    <form method="POST">
+      {% csrf_token %}
+
+      <!-- Logo -->
+      <div class="logo">
+        <img src="{% static 'images/markblu-logo.png' %}" alt="MarkBlu Logo">
+      </div>
+
+      <!-- Toggle Buttons -->
+      <div class="toggle-buttons">
+        <button type="button" id="btn-rent" onclick="setType('Rent')">Rent</button>
+        <button type="button" id="btn-buy" class="active" onclick="setType('Buy')">Buy</button>
+      </div>
+      <input type="hidden" name="property_type" id="property_type" value="Plot">
+
+      <!-- City Dropdown -->
+      <select name="city" required>
+        <option value="">Select City</option>
+        {% for city in cities %}
+          <option value="{{ city }}">{{ city }}</option>
+        {% endfor %}
+      </select>
+
+      <!-- Area Dropdown -->
+      <select name="area">
+        <option value="">Select Area</option>
+        {% for area in areas %}
+          <option value="{{ area }}">{{ area }}</option>
+        {% endfor %}
+      </select>
+
+      <!-- Budget Dropdown -->
+      <select name="budget">
+        <option value="">Select Budget</option>
+        <option value="0-1000000">Below ₹10 Lakh</option>
+        <option value="1000000-3000000">₹10 Lakh - ₹30 Lakh</option>
+        <option value="3000000-5000000">₹30 Lakh - ₹50 Lakh</option>
+        <option value="5000000-10000000">₹50 Lakh - ₹1 Cr</option>
+        <option value="10000000-">Above ₹1 Cr</option>
+      </select>
+
+      <!-- Search Button -->
+      <button type="submit" class="search-btn">Search</button>
+    </form>
+  </div>
+
+</body>
+</html>

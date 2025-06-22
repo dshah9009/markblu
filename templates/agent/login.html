@@ -1,0 +1,134 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Agent Login - MarkBlu</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f2f6fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 80px auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            max-height: 70px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .message-box {
+            color: #c0392b;
+            background: #fdecea;
+            border: 1px solid #e0b4b4;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 12px;
+            display: block;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        button {
+            width: 100%;
+            background-color: #007bff;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .note {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .note a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .note a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="{% static 'images/markblu-logo.png' %}" alt="MarkBlu Logo">
+        </div>
+
+        <h2>Agent Login</h2>
+
+        {% if messages %}
+        <div class="message-box">
+            {% for message in messages %}
+            <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% if error %}
+        <p style="color: red; text-align: center;">{{ error }}</p>
+        {% endif %}
+
+
+        <form method="POST">
+            {% csrf_token %}
+            <label for="email">Email</label>
+            <input type="email" name="email" placeholder="Enter your email" required>
+
+            <label for="password">Password</label>
+            <input type="password" name="password" placeholder="Enter your password" required>
+
+            <button type="submit">Login</button>
+        </form>
+
+        <div class="note">
+            Don't have an account? <a href="{% url 'agent-register' %}">Register here</a>
+        </div>
+    </div>
+</body>
+
+</html>
