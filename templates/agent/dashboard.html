@@ -237,7 +237,8 @@
             </video>
             <p><strong>📍 {{ video.city }}, {{ video.area }}</strong></p>
             <p>Type: {{ video.property_type }}</p>
-            <p>Size: {{ video.property_size_sqft }} sqft | Price: ₹{{ video.price_min }} - ₹{{ video.price_max }}</p>
+            <p>Property: {{video.properties}}</p>
+            <p>Size: {{ video.property_size_sqft }} sqft | Price: ₹{{ video.price }}</p>
             <p>Market Rate: ₹{{ video.market_price_per_sqft }}/sqft | Token: ₹{{ video.token_amount }}</p>
             <p>
                 <a href="{% url 'edit_video' video.id %}"

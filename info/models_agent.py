@@ -20,15 +20,23 @@ PROPERTY_TYPES = [
     ('Buy', 'Buy'),
     ('Rent', 'Rent'),
 ]
-
+PROPERTIES = [
+    ('Plot','Plot'),
+    ('1BHK','1BHK'),
+    ('2BHK','2BHK'),
+    ('3BHK','3BHK'),
+    ('4BHK','4BHK'),
+    
+]
 
 class PropertyVideo(models.Model):
     agent = models.ForeignKey(AgentProfile, on_delete=models.CASCADE)
     city = models.CharField(max_length=100)
     area = models.CharField(max_length=150)
-    price_min = models.IntegerField()
-    price_max = models.IntegerField()
+    price = models.IntegerField()
+    #price_max = models.IntegerField()
     property_type = models.CharField(max_length=10, choices=PROPERTY_TYPES)
+    properties = models.CharField(max_length=10 , choices=PROPERTIES)
     market_price_per_sqft = models.DecimalField(max_digits=10, decimal_places=2)
     token_amount = models.DecimalField(max_digits=10, decimal_places=2)
     property_size_sqft = models.DecimalField(max_digits=10, decimal_places=2)
