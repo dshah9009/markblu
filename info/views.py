@@ -25,7 +25,6 @@ def user_filter_page(request):
     # Get distinct values from uploaded videos
     cities = PropertyVideo.objects.values_list('city', flat=True).distinct()
     areas = PropertyVideo.objects.values_list('area', flat=True).distinct()
-   # properties = PropertyVideo.objects.values_list('properties', flat=True).distinct()
     properties_choices = PropertyVideo._meta.get_field('properties').choices
 
 
@@ -48,39 +47,27 @@ def property_filter_view(request):
     if request.method == 'GET':
         city = request.GET.get('city')
         area = request.GET.get('area')
-        min_price = request.GET.get('min_price')
-        max_price = request.GET.get('max_price')
+        #min_price = request.GET.get('min_price')
+        #max_price = request.GET.get('max_price')
+        price = request.GET.get('price')
         property_type = request.GET.get('property_type')
-
-    #     if city:
-    #         videos = videos.filter(city=city)
-    #     if area:
-    #         videos = videos.filter(area=area)
-    #     if min_price:
-    #         videos = videos.filter(price_min__gte=min_price)
-    #     if max_price:
-    #         videos = videos.filter(price_max__lte=max_price)
-    #     if property_type:
-    #         videos = videos.filter(property_type=property_type)
-
-    # return render(request, 'user/feed.html', {
-    #     'cities': cities,
-    #     'areas': areas,
-    #     'property_types': property_types,
-    #     'videos': videos
-    # })
+        properties = request.GET.get('properties')
 
     filters = {}
     if city:
         filters["city"] = city
     if area:
         filters["area"] = area
-    if min_price:
-        filters["price_min__gte"] = min_price
-    if max_price:
-        filters["price_max__lte"] = max_price
+    if price:
+        filters["price"] = price
+    # if min_price:
+    #     filters["price_min__gte"] = min_price
+    # if max_price:
+    #     filters["price_max__lte"] = max_price
     if property_type:
         filters["property_type"] = property_type
+    if properties:
+        filters["properties"] = properties
 
     videos = PropertyVideo.objects.filter(**filters)
 
