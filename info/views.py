@@ -12,14 +12,14 @@ def user_filter_page(request):
     if request.method == "POST":
         city = request.POST.get("city", "")
         area = request.POST.get("area", "")
-        price_min = request.POST.get("price_min", "")
-        price_max = request.POST.get("price_max", "")
+        # price_min = request.POST.get("price_min", "")
+        # price_max = request.POST.get("price_max", "")
         property_type = request.POST.get("property_type", "")
         properties = request.POST.get("properties", "")
 
 
 
-        query = f"?city={city}&area={area}&price_min={price_min}&price_max={price_max}&property_type={property_type}&properties={properties}"
+        query = f"?city={city}&area={area}&property_type={property_type}&properties={properties}"
         return redirect('/feed/' + query)
 
     # Get distinct values from uploaded videos
