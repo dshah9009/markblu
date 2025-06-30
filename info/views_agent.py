@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from .models_agent import AgentProfile, PropertyVideo
+from .models_agent import AgentProfile, PropertyVideo, DealType
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
@@ -22,23 +22,28 @@ def agent_register(request):
         project_location = request.POST.get("project_location")
         company_logo = request.FILES.get("company_logo")
         company_rera_id = request.POST.get("company_rera_id")
+        experience = request.POST.get("experience")
+        deal_ids = request.POST.getlist("deal")
 
         if User.objects.filter(email= email).exists():
             messages.error(request, "Email already registered")
             return redirect("agent-register")
         user = User.objects.create_user(username=username, email=email, password=password, first_name=first_name,last_name=last_name)
-        AgentProfile.objects.create(
+        profile = AgentProfile.objects.create(
             user=user,
             mobile=mobile,
             company_name=company_name,
             office_address=office_address,
             project_location=project_location,
             company_logo=company_logo,
-            company_rera_id=company_rera_id
+            company_rera_id=company_rera_id,
+            experience = experience
         )
+        profile.deal.set(deal_ids)
         messages.success(request, "Registration successful. Please login.")
         return redirect("agent-login")
-    return render(request, "agent/register.html")
+    deal_types = DealType.objects.all()
+    return render(request, "agent/register.html",{"deal_types": deal_types})
 
 def agent_login(request):
     if request.method == "POST":

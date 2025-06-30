@@ -23,6 +23,11 @@
       -webkit-overflow-scrolling: touch;
     }
 
+    video::-internal-media-controls-overlay-cast-button {
+      display: none;
+    }
+
+
     .reel {
       height: 100vh;
       scroll-snap-align: start;
@@ -166,42 +171,48 @@
   </div>
 
   <script>
+    let isMuted = true;
     const videos = document.querySelectorAll("video");
-    let isMuted = true; // 🔇 Global mute state
 
-    // Handle click to toggle mute globally
+    // Mute/unmute all on click of the current video
     videos.forEach(video => {
       video.addEventListener("click", () => {
         isMuted = !isMuted;
-        videos.forEach(v => {
-          v.muted = isMuted;
-        });
+        video.muted = isMuted;
       });
     });
 
-    // Intersection Observer to play/pause and apply global mute
-    const observer = new IntersectionObserver(
-      entries => {
-        entries.forEach(entry => {
-          const video = entry.target;
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const video = entry.target;
 
-          if (entry.isIntersecting) {
-            video.currentTime = 0;  // Restart
-            video.muted = isMuted;  // Apply global mute setting
-            video.play();
-          } else {
-            video.pause();
-          }
-        });
-      },
-      {
-        threshold: 0.75
-      }
-    );
+        if (entry.isIntersecting) {
+          // Pause and mute all other videos
+          videos.forEach(v => {
+            if (v !== video) {
+              v.pause();
+              v.currentTime = 0;
+              v.muted = true;
+            }
+          });
 
+          // Play the current visible video
+          video.muted = isMuted;
+          video.play().catch(err => {
+            console.error("Autoplay error:", err);
+          });
+        } else {
+          video.pause();
+        }
+      });
+    }, {
+      threshold: 0.9
+    });
+
+    // Observe all videos
     videos.forEach(video => {
-      video.muted = isMuted;
       video.pause();
+      video.muted = true;
       observer.observe(video);
     });
   </script>

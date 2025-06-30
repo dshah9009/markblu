@@ -3,6 +3,13 @@
 <html>
 
 <head>
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <!-- jQuery + Select2 JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <title>Agent Registration</title>
     <style>
         body {
@@ -47,14 +54,31 @@
             <label>Email</label><input type="email" name="email" required>
             <label>Password</label><input type="password" name="password" required>
             <label>Mobile</label><input type="text" name="mobile" required>
-            <label>Company Name</label><input type="text" name="company_name" required>
+            <label>Company Name (optional)</label><input type="text" name="company_name">
             <label>Office Address</label><input type="text" name="office_address" required>
             <label>Project Location</label><input type="text" name="project_location" required>
+            <label><strong>Deal In (Select multiple)</strong></label>
+            <select id="deal-select" name="deal" multiple="multiple" required style="width: 100%;">
+                {% for deal in deal_types %}
+                <option value="{{ deal.id }}">{{ deal.name }}</option>
+                {% endfor %}
+            </select>
+            <label>Experience</label><input type="text" name="experience" required>
             <label>Company Logo (optional)</label><input type="file" name="company_logo">
             <label>Company RERA ID (optional)</label><input type="text" name="company_rera_id">
             <button type="submit">Register</button>
         </form>
     </div>
+    <script>
+        $(document).ready(function () {
+            $('#deal-select').select2({
+                placeholder: "Select",
+                allowClear: true,
+                closeOnSelect: false
+            });
+        });
+    </script>
+
 </body>
 
 </html>
