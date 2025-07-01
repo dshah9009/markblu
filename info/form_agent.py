@@ -6,10 +6,11 @@ class PropertyVideoForm(forms.ModelForm):
         model = PropertyVideo
         fields = [ 'city', 'area', 'price', #'price_max',
             'property_type', 'properties', 'market_price_per_sqft',
-            'token_amount', 'property_size_sqft',
+            'token_amount', 'property_size_sqft', 'rera', 'payment_condition',
             'video',
         ]
         widgets = {
             'property_type': forms.Select(choices=PropertyVideo._meta.get_field('property_type').choices),
-            'properties' : forms.Select(choices=PropertyVideo._meta.get_field('properties').choices)
+            'properties' : forms.Select(choices=PropertyVideo._meta.get_field('properties').choices),
+            'rera' : forms.Select(choices=PropertyVideo._meta.get_field('rera').choices)
         }
