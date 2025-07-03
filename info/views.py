@@ -1,11 +1,13 @@
 from django.db.models import Value
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from .models_agent import PropertyVideo
 from django.template import RequestContext
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from .models import UserProfile
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 
 
 def user_filter_page(request):
@@ -122,3 +124,26 @@ def user_login(request):
                 })
     return render(request, "user/login.html")
 
+def schedule_whatsapp_redirect(request, video_id):
+    if not request.user.is_authenticated:
+        return redirect(f"{reverse('user-login')}?next={request.path}")
+
+    video = get_object_or_404(PropertyVideo, id=video_id)
+    area = video.area
+    city = video.city
+    mobile = video.agent.mobile
+    full_number = f"91{mobile}"
+    message = f"Hi, I want to schedule a visit for the property in {area}, {city}"
+    whatsapp_url = f"https://wa.me/{full_number}?text={message.replace(' ', '%20')}"
+
+    return redirect(whatsapp_url)
+
+def detail_view(request, video_id):
+    video = get_object_or_404(PropertyVideo, id=video_id)
+    agent = video.agent
+    from_url = request.GET.get('from', reverse('feed'))  # fallback to feed if not provided
+    return render(request, 'user/details.html', {
+        'video': video,
+        'agent': agent,
+        'from_url': from_url,
+    })
