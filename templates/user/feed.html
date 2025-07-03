@@ -66,7 +66,9 @@
       z-index: 2;
       width: 100%;
       padding: 1rem;
+      padding-bottom: 5rem;
       background: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent);
+
     }
 
     .actions-sidebar {
@@ -133,7 +135,7 @@
       <div class="top-left-info">
         <div><span class="material-icons text-sm">location_on</span> {{ video.city }}</div>
         <div><span class="material-icons text-sm transform scale-y-[-1]">trending_flat</span> {{ video.area }}</div>
-        <div><span class="material-icons text-sm transform scale-y-[-1]">trending_flat</span> ₹{{ video.price}} Lakh
+        <div><span class="material-icons text-sm transform scale-y-[-1]">trending_flat</span> ₹{{ video.price}}
         </div>
         <div><span class="material-icons text-sm transform scale-y-[-1]">trending_flat</span> {{ video.property_type }}
         </div>
@@ -147,10 +149,19 @@
           <span class="bg-green-500 text-white px-2 py-1 rounded text-xs">RERA: {{video.rera}}</span>
           <span class="bg-gray-700 text-white px-2 py-1 rounded text-xs ml-2">Token: ₹{{ video.token_amount }}</span>
         </div>
-        <p><strong>Broker details</Details>:</strong> {{ video.agent.user.first_name }} {{ video.agent.user.last_name }}
+        <p>
+          <a href="{% url 'details' video.id %}?from={{ request.get_full_path|urlencode }}"
+            class="text-blue-500 underline font-medium hover:text-blue-600">
+            <strong>Broker details:</strong>
+          </a>
+          {{ video.agent.user.first_name }} {{ video.agent.user.last_name }}
         </p>
+
+
+
+
         <p><strong>Project details</Details>:</strong> {{ video.agent.company_name }}</p>
-        <p><strong>Price</Details>:</strong>{{video.price}}</p>
+        <p><strong>Price</Details>:</strong> ₹{{video.price}}</p>
         <p>Market Price: ₹{{ video.market_price_per_sqft }}/sqft</p>
         <p>Size: {{ video.property_size_sqft }} sqft</p>
       </div>
@@ -161,9 +172,18 @@
           onclick="{% if user.is_authenticated %}window.location.href='tel:{{ video.agent.mobile }}'{% else %}window.location.href='{% url 'user-login' %}?next={{ request.get_full_path|urlencode }}'{% endif %}">
           <span class="material-icons">call</span> Call Broker
         </div>
-        <div class="action-item"><span class="material-icons">event</span> Schedule</div>
+
+        <a class="action-item" href="{% url 'schedule_whatsapp' video.id %}">
+          <span class="material-icons">event</span> Schedule
+        </a>
+
         <div class="action-item"><span class="material-icons">bookmark_border</span> Save</div>
-        <div class="action-item"><span class="material-icons">location_on</span> Location</div>
+
+        <a class="action-item"
+          href="https://www.google.com/maps/search/?api=1&query={{ video.area|urlencode }},{{ video.city|urlencode }}"
+          target="_blank" rel="noopener noreferrer">
+          <span class="material-icons">location_on</span> Location
+        </a>
       </div>
 
     </div>
