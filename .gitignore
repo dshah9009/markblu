@@ -1,3 +1,4 @@
 env/
 info/__pycache__/
 info/migrations/__pycache__/
+markblu/__pycache__/
