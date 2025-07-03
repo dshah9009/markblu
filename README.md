@@ -1,6 +1,7 @@
 # markblu
-Developed by   Deepak kumar shah
-email          deepakshahwal999@gmail.com 
-mobile         9009443295
-github         dshah9009
-
+----
+- **Developer:** Deepak Kumar Shah
+- **Email:** deepakshahwal999@gmail.com
+- **Mobile:** 9009443295
+- **GitHub:** [dshah9009](https://github.com/dshah9009)
+----
