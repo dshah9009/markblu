@@ -28,6 +28,10 @@ def agent_register(request):
         if User.objects.filter(email= email).exists():
             messages.error(request, "Email already registered")
             return redirect("agent-register")
+        if not mobile.isdigit() or len(mobile) != 10:
+            messages.error(request, "Mobile number must be at least 10 digits and contain only numbers.")
+            return redirect("agent-register")
+        
         user = User.objects.create_user(username=username, email=email, password=password, first_name=first_name,last_name=last_name)
         profile = AgentProfile.objects.create(
             user=user,

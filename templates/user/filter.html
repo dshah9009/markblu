@@ -9,16 +9,22 @@
   <style>
     body {
       font-family: 'Arial', sans-serif;
-      background-color: #f5f5f5;
+      background: radial-gradient(circle at top left, #e0f7fa, #f1f8ff);
+      min-height: 100vh;
       padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .container {
-      max-width: 400px;
-      margin: auto;
-      background-color: #fff;
-      border-radius: 12px;
-      padding: 25px 20px;
+      max-width: 420px;
+      width: 100%;
+      background-color: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      border-radius: 16px;
+      padding: 30px 20px;
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
     }
 
     .logo {
@@ -33,66 +39,71 @@
 
     .toggle-buttons {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       margin-bottom: 20px;
     }
 
     .toggle-buttons button {
       flex: 1;
-      padding: 12px 0;
+      padding: 14px 0;
       font-size: 16px;
       border: none;
-      border-radius: 10px;
-      background-color: #fff;
-      margin-right: 10px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      margin: 0 5px;
+      background: #f0f0f0;
       color: #333;
-      font-weight: 500;
+      font-weight: 600;
       cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
 
-    .toggle-buttons button:last-child {
-      margin-right: 0;
-    }
-
-    .toggle-buttons .active {
-      background-color: #003f7f;
+    .toggle-buttons button.active {
+      background: linear-gradient(to right, #66a6ff, #89f7fe);
       color: white;
+      transform: scale(1.02);
     }
 
     select {
       width: 100%;
-      padding: 14px;
-      font-size: 16px;
-      border-radius: 10px;
-      background-color: white;
-      color: #333;
-      margin-bottom: 16px;
+      padding: 14px 16px;
       border: none;
-      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+      border-radius: 12px;
+      background-color: #ffffff;
+      color: #333;
+      font-size: 15px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
       appearance: none;
-      background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20fill%3D%22%23444%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M7%208l5%205%205-5z%22/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20fill%3D%22%23003f7f%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M7%208l5%205%205-5z%22/%3E%3C/svg%3E");
       background-repeat: no-repeat;
-      background-position: right 10px center;
+      background-position: right 16px center;
       background-size: 16px;
+    }
+
+    select:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(102, 166, 255, 0.2);
     }
 
     .search-btn {
       width: 100%;
-      padding: 14px;
+      padding: 16px;
       font-size: 16px;
       font-weight: bold;
-      background-color: #003f7f;
+      background: linear-gradient(to right, #66a6ff, #89f7fe);
       color: white;
       border: none;
-      border-radius: 10px;
-      margin-top: 15px;
+      border-radius: 12px;
+      margin-top: 10px;
       cursor: pointer;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 5px 12px rgba(0, 0, 0, 0.12);
+      transition: background 0.4s ease, transform 0.2s ease;
     }
 
     .search-btn:hover {
-      background-color: #002f5f;
+      background: linear-gradient(to right, #558de8, #66d3fa);
+      transform: translateY(-2px);
     }
   </style>
 
@@ -140,12 +151,14 @@
         {% endfor %}
       </select>
 
-      <select name="properties" class="w-full p-2 border rounded">
+      <!-- BHK / Plot Dropdown -->
+      <select name="properties">
         <option value="">Select BHK/Plot</option>
         {% for value, label in properties_choices %}
         <option value="{{ value }}">{{ label }}</option>
         {% endfor %}
       </select>
+
       <!-- Budget Dropdown -->
       <select name="budget">
         <option value="">Select Budget</option>

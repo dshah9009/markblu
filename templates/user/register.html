@@ -1,74 +1,98 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>User Registration - MarkBlu</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f7f7f7;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
       margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
+
     .form-container {
       background: white;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      width: 90%;
+      padding: 40px 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      width: 100%;
       max-width: 400px;
       text-align: center;
     }
+
     .form-container img {
-      width: 80px;
-      margin-bottom: 15px;
+      max-height: 75px;
+      margin-bottom: 20px;
     }
-    .form-container h2 {
-      color: #0077cc;
+
+    h2 {
+      color: #333;
+      margin-bottom: 25px;
     }
-    .form-container form {
+
+    form {
       display: flex;
       flex-direction: column;
-      align-items: stretch;
+      gap: 15px;
     }
-    .form-container input {
-      padding: 10px;
-      margin: 10px 0;
+
+    input {
+      padding: 12px;
       border: 1px solid #ccc;
-      border-radius: 5px;
+      border-radius: 8px;
+      font-size: 15px;
     }
-    .form-container button {
-      background-color: #0077cc;
+
+    button {
+      background-color: #66a6ff;
       color: white;
-      padding: 10px;
+      padding: 14px;
       border: none;
-      border-radius: 5px;
+      border-radius: 8px;
+      font-size: 16px;
       cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
     }
-    .form-container .login-link {
-      margin-top: 10px;
+
+    button:hover {
+      background-color: #558de8;
+      transform: translateY(-2px);
+    }
+
+    .error {
+      background: #fdecea;
+      color: #c0392b;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    .login-link {
+      margin-top: 15px;
       font-size: 14px;
     }
-    .form-container .login-link a {
+
+    .login-link a {
       color: #0077cc;
       text-decoration: none;
     }
-    .error {
-      color: red;
-      font-size: 14px;
-    }
   </style>
 </head>
+
 <body>
   <div class="form-container">
     <img src="{% static 'images/markblu-logo.png' %}" alt="MarkBlu Logo">
-    <h2>Create an account</h2>
-    {% if error %}<p class="error">{{ error }}</p>{% endif %}
+    <h2>Create an Account</h2>
+    {% if error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
     <form method="POST">
       {% csrf_token %}
       <input type="text" name="first_name" placeholder="First Name" required>
@@ -83,4 +107,5 @@
     </div>
   </div>
 </body>
+
 </html>

@@ -150,12 +150,12 @@
           <span class="bg-gray-700 text-white px-2 py-1 rounded text-xs ml-2">Token: ₹{{ video.token_amount }}</span>
         </div>
         <p>
-          <a href="{% url 'details' video.id %}?from={{ request.get_full_path|urlencode }}"
-            class="text-blue-500 underline font-medium hover:text-blue-600">
-            <strong>Broker details:</strong>
-          </a>
-          {{ video.agent.user.first_name }} {{ video.agent.user.last_name }}
-        </p>
+  <a href="{% url 'details' video.id %}?from={{ request.get_full_path|urlencode }}"
+     class="text-blue-500 underline font-medium hover:text-blue-600">
+    <strong>Broker details:</strong>
+  </a>
+  {{ video.agent.user.first_name }} {{ video.agent.user.last_name }}
+</p>
 
 
 
