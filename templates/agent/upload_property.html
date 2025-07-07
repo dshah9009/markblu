@@ -9,24 +9,43 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f7f7f7;
+            background: radial-gradient(circle at top left, #d0f0ff, #f1f8ff);
             margin: 0;
             padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .container {
-            max-width: 400px;
-            margin: 60px auto;
-            padding: 30px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.75);
+            padding: 40px 30px;
+            border-radius: 16px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 450px;
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         h2 {
             text-align: center;
-            color: #0077cc;
-            margin-bottom: 20px;
+            color: #003c8f;
+            font-size: 26px;
+            margin-bottom: 25px;
         }
 
         form {
@@ -35,42 +54,58 @@
         }
 
         label {
-            font-weight: bold;
-            margin-top: 12px;
+            font-weight: 600;
+            margin-top: 15px;
+            color: #333;
+            font-size: 15px;
         }
 
         input,
         select,
         textarea {
-            padding: 8px 10px;
-            font-size: 14px;
+            padding: 14px 12px;
+            font-size: 15px;
             border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-top: 5px;
+            border-radius: 10px;
+            margin-top: 8px;
+            background-color: rgba(255, 255, 255, 0.9);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #66a6ff;
+            box-shadow: 0 0 8px rgba(102, 166, 255, 0.4);
         }
 
         button {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #0077cc;
+            margin-top: 25px;
+            padding: 14px;
+            background: linear-gradient(to right, #003c8f, #005bbb);
             color: white;
             font-weight: bold;
             border: none;
-            border-radius: 5px;
+            border-radius: 12px;
             cursor: pointer;
+            transition: background 0.4s ease, transform 0.2s ease;
+            font-size: 16px;
         }
 
         button:hover {
-            background-color: #005fa3;
+            background: linear-gradient(to right, #558de8, #66d3fa);
+            transform: translateY(-3px);
         }
 
         .back-link {
             display: block;
             text-align: center;
-            margin-top: 15px;
+            margin-top: 20px;
             text-decoration: none;
-            color: #0077cc;
-            font-size: 14px;
+            color: #003c8f;
+            font-size: 15px;
+            font-weight: 600;
         }
 
         .back-link:hover {
@@ -87,8 +122,7 @@
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
-
-            <button type="submit">Upload</button>
+            <button type="submit">Upload Property</button>
         </form>
 
         <a href="{% url 'agent-dashboard' %}" class="back-link">← Back to Dashboard</a>

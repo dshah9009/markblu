@@ -147,3 +147,6 @@ def detail_view(request, video_id):
         'agent': agent,
         'from_url': from_url,
     })
+
+def custom_404(request, exception):
+    return render(request, 'user/404.html', status=404)

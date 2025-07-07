@@ -28,6 +28,7 @@ class AgentProfile(models.Model):
     deal = models.ManyToManyField(DealType)
     company_logo = models.ImageField(upload_to=agent_logo_upload_path,blank = True, null = True)
     company_rera_id = models.CharField(max_length=50, blank= True, null = True)
+    role = models.CharField( max_length= 10, default= 'Agent')
 
     def __str__(self):
         return self.user.username

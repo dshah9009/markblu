@@ -13,6 +13,7 @@
       min-height: 100vh;
       padding: 20px;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
     }
@@ -29,39 +30,39 @@
 
     .logo {
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      align-items: center;
       margin-bottom: 25px;
     }
 
     .logo img {
       height: 60px;
+      margin-bottom: 15px;
     }
 
     .toggle-buttons {
       display: flex;
-      justify-content: space-between;
-      margin-bottom: 20px;
+      gap: 10px;
+      width: 100%;
     }
 
     .toggle-buttons button {
       flex: 1;
-      padding: 14px 0;
-      font-size: 16px;
-      border: none;
-      border-radius: 12px;
-      margin: 0 5px;
+      padding: 12px 0;
+      border-radius: 25px;
+      font-size: 15px;
       background: #f0f0f0;
-      color: #333;
       font-weight: 600;
+      border: none;
       cursor: pointer;
-      transition: background-color 0.3s ease, transform 0.2s ease;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      transition: background 0.3s ease, transform 0.2s ease;
     }
 
     .toggle-buttons button.active {
-      background: linear-gradient(to right, #66a6ff, #89f7fe);
+      background: linear-gradient(to right, #003c8f, #005bbb);
       color: white;
-      transform: scale(1.02);
+      transform: scale(1.05);
     }
 
     select {
@@ -83,7 +84,7 @@
 
     select:focus {
       outline: none;
-      box-shadow: 0 0 0 3px rgba(102, 166, 255, 0.2);
+      box-shadow: 0 0 0 3px rgba(0, 95, 163, 0.2);
     }
 
     .search-btn {
@@ -91,7 +92,7 @@
       padding: 16px;
       font-size: 16px;
       font-weight: bold;
-      background: linear-gradient(to right, #66a6ff, #89f7fe);
+      background: linear-gradient(to right, #003c8f, #005bbb);
       color: white;
       border: none;
       border-radius: 12px;
@@ -102,8 +103,15 @@
     }
 
     .search-btn:hover {
-      background: linear-gradient(to right, #558de8, #66d3fa);
+      background: linear-gradient(to right, #004b86, #0064b0);
       transform: translateY(-2px);
+    }
+
+    .footer {
+      margin-top: 30px;
+      font-size: 13px;
+      color: #555;
+      text-align: center;
     }
   </style>
 
@@ -123,16 +131,16 @@
     <form method="POST">
       {% csrf_token %}
 
-      <!-- Logo -->
+      <!-- Logo and Toggle Buttons Together -->
       <div class="logo">
         <img src="{% static 'images/markblu-logo.png' %}" alt="MarkBlu Logo">
+        <div class="toggle-buttons">
+          <button type="button" id="btn-buy" onclick="setType('Buy')">Buy</button>
+          <button type="button" id="btn-rent" class="active" onclick="setType('Rent')">Rent</button>
+        </div>
       </div>
 
-      <!-- Toggle Buttons -->
-      <div class="toggle-buttons">
-        <button type="button" id="btn-buy" onclick="setType('Buy')">Buy</button>
-        <button type="button" id="btn-rent" class="active" onclick="setType('Rent')">Rent</button>
-      </div>
+      <!-- Hidden field -->
       <input type="hidden" name="property_type" id="property_type" value="Rent">
 
       <!-- City Dropdown -->
@@ -145,7 +153,7 @@
 
       <!-- Area Dropdown -->
       <select name="area">
-        <option value="">Select Area</option>
+        <option value="">Select Area (optional)</option>
         {% for area in areas %}
         <option value="{{ area }}">{{ area }}</option>
         {% endfor %}
@@ -153,7 +161,7 @@
 
       <!-- BHK / Plot Dropdown -->
       <select name="properties">
-        <option value="">Select BHK/Plot</option>
+        <option value="">Select BHK/Plot (optional)</option>
         {% for value, label in properties_choices %}
         <option value="{{ value }}">{{ label }}</option>
         {% endfor %}
@@ -161,7 +169,7 @@
 
       <!-- Budget Dropdown -->
       <select name="budget">
-        <option value="">Select Budget</option>
+        <option value="">Select Budget (optional)</option>
         <option value="0-1000000">Below ₹10 Lakh</option>
         <option value="1000000-3000000">₹10 Lakh - ₹30 Lakh</option>
         <option value="3000000-5000000">₹30 Lakh - ₹50 Lakh</option>
@@ -169,8 +177,13 @@
         <option value="10000000-">Above ₹1 Cr</option>
       </select>
 
+      <!-- Search Button -->
       <button type="submit" class="search-btn">Search</button>
     </form>
+  </div>
+
+  <div class="footer">
+    Version {{ APP_VERSION }}
   </div>
 
 </body>

@@ -70,7 +70,7 @@ def agent_login(request):
                 })
     return render(request, "agent/login.html")
 
-@login_required
+@login_required(login_url='agent-login')
 def agent_dashboard(request):
     agent = AgentProfile.objects.get(user=request.user)
     video_count = PropertyVideo.objects.filter(agent=agent).count()
