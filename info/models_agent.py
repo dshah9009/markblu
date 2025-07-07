@@ -9,7 +9,8 @@ def agent_logo_upload_path(instance, filename):
 DEAL = [
     ('All','All'),
     ('Plot','Plot'),
-    ('Rent','Rent'),
+    ('Flat','Flat'),
+    ('Raw House','Row House'),
     
 ]
 class DealType(models.Model):
@@ -39,6 +40,7 @@ PROPERTY_TYPES = [
 ]
 PROPERTIES = [
     ('Plot','Plot'),
+    ('Raw House','Raw House'),
     ('1BHK','1BHK'),
     ('2BHK','2BHK'),
     ('3BHK','3BHK'),
@@ -55,12 +57,11 @@ class PropertyVideo(models.Model):
     city = models.CharField(max_length=100)
     area = models.CharField(max_length=150)
     price = models.IntegerField()
-    #price_max = models.IntegerField()
     property_type = models.CharField(max_length=10, choices=PROPERTY_TYPES)
     properties = models.CharField(max_length=10 , choices=PROPERTIES)
-    market_price_per_sqft = models.DecimalField(max_digits=10, decimal_places=2)
+    guideline_per_sqft = models.IntegerField()
     token_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    property_size_sqft = models.DecimalField(max_digits=10, decimal_places=2)
+    property_size_sqft = models.IntegerField()
     rera = models.CharField(max_length=10, choices=rera_approval, blank=True, null=True)
     payment_condition = models.CharField(max_length=150, blank=True, null=True)
     video = models.FileField(upload_to='property_videos/')

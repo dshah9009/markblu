@@ -137,11 +137,10 @@
       <img src="{% static 'images/markblu-logo.png' %}" alt="MarkBlu Logo">
     </div>
     <h2>Agent Login</h2>
-    {% if messages %}
+    {% if error %}
     <div class="message-box">
-      {% for message in messages %}
-      <p>{{ message }}</p>
-      {% endfor %}
+      
+      <p>{{ error }}</p>
     </div>
     {% endif %}
     <form method="POST">
