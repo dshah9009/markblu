@@ -142,10 +142,12 @@ def detail_view(request, video_id):
     video = get_object_or_404(PropertyVideo, id=video_id)
     agent = video.agent
     from_url = request.GET.get('from', reverse('feed'))  # fallback to feed if not provided
+    agent_videos = PropertyVideo.objects.filter(agent=agent).exclude(id=video.id)
     return render(request, 'user/details.html', {
         'video': video,
         'agent': agent,
         'from_url': from_url,
+        'agent_videos': agent_videos
     })
 
 def custom_404(request, exception):
