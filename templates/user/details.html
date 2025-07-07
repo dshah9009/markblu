@@ -16,9 +16,9 @@
         }
 
         body {
-            font-family: 'Roboto', sans-serif;
-            background: radial-gradient(circle at top left, #0f172a, #1e293b);
-            color: #f9fafb;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(circle at top left, #e0f7fa, #f1f8ff);
+            color: #333;
             padding: 2rem;
             min-height: 100vh;
             display: flex;
@@ -29,17 +29,16 @@
         .container {
             width: 100%;
             max-width: 850px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             padding: 2rem;
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
         }
 
         h2 {
-            color: #93c5fd;
-            border-bottom: 2px solid #3b82f6;
+            color: #003c8f;
+            border-bottom: 2px solid #0077cc;
             padding-bottom: 0.5rem;
             margin-bottom: 1rem;
         }
@@ -51,7 +50,7 @@
 
         .label {
             font-weight: bold;
-            color: #dbeafe;
+            color: #005bbb;
         }
 
         video {
@@ -60,7 +59,7 @@
             border-radius: 12px;
             margin-top: 1rem;
             object-fit: contain;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .info-row {
@@ -77,7 +76,7 @@
             font-size: 16px;
             vertical-align: bottom;
             margin-right: 6px;
-            color: #60a5fa;
+            color: #0077cc;
         }
 
         .badge {
@@ -103,12 +102,16 @@
         }
 
         .top-bar a {
-            background: #3b82f6;
+            background: linear-gradient(to right, #003c8f, #005bbb);
             color: white;
             padding: 8px 16px;
             border-radius: 8px;
             text-decoration: none;
             font-size: 14px;
+        }
+
+        .top-bar a:hover {
+            background: linear-gradient(to right, #002e6d, #0064b0);
         }
 
         .top-bar img {
@@ -124,6 +127,7 @@
             border-radius: 8px;
             text-decoration: none;
             margin-bottom: 0.6rem;
+            cursor: pointer;
         }
 
         .call-button .material-icons {
@@ -131,10 +135,10 @@
         }
 
         .other-properties {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.9);
             padding: 1.5rem;
             border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
             margin-top: 2rem;
         }
 
@@ -191,19 +195,22 @@
             </video>
             <div class="info-row" style="margin-top: 1rem;">
                 <div class="info-col">
+                    
                     <p><span class="label">City:</span> {{ video.city }}</p>
                     <p><span class="label">Area:</span> {{ video.area }}</p>
                     <p><span class="label">Property Type:</span> {{ video.property_type }}</p>
                     <p><span class="label">Category:</span> {{ video.properties }}</p>
+                    <p style="margin-top: 10px;"><span class="label">Market Price:</span> ₹{{ video.price }}</p>
                 </div>
                 <div class="info-col">
-                    <p><span class="label">Size:</span> {{ video.property_size_sqft }} sqft</p>
-                    <p><span class="label">Market Price:</span> ₹{{ video.market_price_per_sqft }}/sqft</p>
-                    <p><span class="label">Token Amount:</span> ₹{{ video.token_amount }}</p>
                     <p><span class="label">RERA Approved:</span> {{ video.rera }}</p>
+                    <p><span class="label">Size:</span> {{ video.property_size_sqft }} sqft</p>
+                    <p><span class="label">Guideline:</span> ₹{{ video.guideline_per_sqft }}/sqft</p>
+                    <p><span class="label">Token Amount:</span> ₹{{ video.token_amount }}</p>
+                    
                 </div>
             </div>
-            <p style="margin-top: 10px;"><span class="label">Total Price:</span> ₹{{ video.price }} Lakh</p>
+            
             {% if video.payment_condition %}
             <p><span class="label">Payment Condition:</span> {{ video.payment_condition }}</p>
             {% endif %}
