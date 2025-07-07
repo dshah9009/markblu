@@ -8,22 +8,24 @@
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+      background: radial-gradient(circle at top left, #e0f7fa, #f1f8ff);
       margin: 0;
       padding: 0;
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 40px 20px;
     }
 
     .form-container {
-      background: white;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
       padding: 40px 30px;
-      border-radius: 15px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      border-radius: 16px;
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
       text-align: center;
     }
 
@@ -33,8 +35,9 @@
     }
 
     h2 {
-      color: #333;
+      color: #003c8f;
       margin-bottom: 25px;
+      font-size: 22px;
     }
 
     form {
@@ -44,25 +47,33 @@
     }
 
     input {
-      padding: 12px;
+      padding: 14px;
       border: 1px solid #ccc;
-      border-radius: 8px;
+      border-radius: 10px;
       font-size: 15px;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    input:focus {
+      border-color: #0077cc;
+      box-shadow: 0 0 5px rgba(0, 119, 204, 0.3);
+      outline: none;
     }
 
     button {
-      background-color: #66a6ff;
+      background: linear-gradient(to right,#003c8f, #005bbb);
       color: white;
       padding: 14px;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       font-size: 16px;
+      font-weight: bold;
       cursor: pointer;
-      transition: background-color 0.3s, transform 0.2s;
+      transition: background 0.3s ease, transform 0.2s ease;
     }
 
     button:hover {
-      background-color: #558de8;
+      background: linear-gradient(to right, #002e6d, #0064b0);
       transform: translateY(-2px);
     }
 
@@ -70,18 +81,41 @@
       background: #fdecea;
       color: #c0392b;
       padding: 12px;
-      border-radius: 8px;
+      border-radius: 10px;
       margin-bottom: 15px;
+      font-weight: 600;
+      font-size: 15px;
     }
 
     .login-link {
-      margin-top: 15px;
+      margin-top: 18px;
       font-size: 14px;
     }
 
     .login-link a {
       color: #0077cc;
       text-decoration: none;
+      font-weight: 500;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      h2 {
+        font-size: 20px;
+      }
+
+      button {
+        padding: 13px;
+        font-size: 15px;
+      }
+
+      input {
+        padding: 13px;
+        font-size: 14px;
+      }
     }
   </style>
 </head>

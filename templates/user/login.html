@@ -9,11 +9,12 @@
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+      background: radial-gradient(circle at top left, #e0f7fa, #f1f8ff);
+      min-height: 100vh;
       margin: 0;
       padding: 0;
-      min-height: 100vh;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       padding: 40px 20px;
@@ -21,7 +22,7 @@
 
     .form-container {
       background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(10px);
       padding: 35px 25px;
       border-radius: 16px;
       box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
@@ -56,13 +57,13 @@
     }
 
     input:focus {
-      border-color: #66a6ff;
-      box-shadow: 0 0 5px rgba(102, 166, 255, 0.4);
+      border-color: #0077cc;
+      box-shadow: 0 0 5px rgba(0, 119, 204, 0.3);
       outline: none;
     }
 
     button {
-      background: linear-gradient(to right, #66a6ff, #89f7fe);
+      background: linear-gradient(to right, #003c8f, #005bbb);
       color: white;
       padding: 14px;
       border: none;
@@ -74,7 +75,7 @@
     }
 
     button:hover {
-      background: linear-gradient(to right, #558de8, #66d3fa);
+      background: linear-gradient(to right, #002e6d, #0064b0);
       transform: translateY(-2px);
     }
 
@@ -101,6 +102,13 @@
       margin-bottom: 15px;
       font-weight: 600;
       font-size: 15px;
+    }
+
+    .footer {
+      margin-top: 30px;
+      font-size: 13px;
+      color: #555;
+      text-align: center;
     }
 
     @media (max-width: 480px) {
@@ -140,6 +148,10 @@
     <div class="register-link">
       Don’t have an account? <a href="{% url 'register' %}">Create an account</a>
     </div>
+  </div>
+  
+  <div class="footer">
+    Version {{ APP_VERSION }}
   </div>
 </body>
 
