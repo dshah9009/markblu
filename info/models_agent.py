@@ -25,7 +25,7 @@ class AgentProfile(models.Model):
     company_name = models.CharField(max_length= 100, blank= True, null = True)
     office_address = models.TextField()
     project_location = models.CharField(max_length=100)
-    experience = models.CharField(max_length=2)
+    experience = models.IntegerField()
     deal = models.ManyToManyField(DealType)
     company_logo = models.ImageField(upload_to=agent_logo_upload_path,blank = True, null = True)
     company_rera_id = models.CharField(max_length=50, blank= True, null = True)

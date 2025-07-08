@@ -8,7 +8,9 @@ from .form_agent import PropertyVideoForm
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseForbidden
 from django.contrib.auth import logout
+from django.db import transaction
 
+@transaction.atomic
 def agent_register(request):
     if request.method == "POST":
         first_name = request.POST.get("first_name")
@@ -31,6 +33,9 @@ def agent_register(request):
         if not mobile.isdigit() or len(mobile) != 10:
             messages.error(request, "Mobile number must be at least 10 digits and contain only numbers.")
             return redirect("agent-register")
+        if not experience.isdigit():
+            messages.error(request, "Experience must be a number.")
+            return redirect("agent-register")
         
         user = User.objects.create_user(username=username, email=email, password=password, first_name=first_name,last_name=last_name)
         profile = AgentProfile.objects.create(
@@ -50,6 +55,9 @@ def agent_register(request):
     return render(request, "agent/register.html",{"deal_types": deal_types})
 
 def agent_login(request):
+    if request.user.is_authenticated:
+        return redirect('agent-dashboard')
+    
     if request.method == "POST":
         username = request.POST.get("email")
         password = request.POST.get("password")
@@ -83,7 +91,8 @@ def agent_dashboard(request):
     })
 
 
-@login_required
+@login_required 
+@transaction.atomic
 def upload_property(request):
     agent_profile = AgentProfile.objects.get(user=request.user)
     if request.method == 'POST':
