@@ -39,13 +39,21 @@ PROPERTY_TYPES = [
     ('Rent', 'Rent'),
 ]
 PROPERTIES = [
-    ('Plot','Plot'),
-    ('Raw House','Raw House'),
-    ('1BHK','1BHK'),
-    ('2BHK','2BHK'),
-    ('3BHK','3BHK'),
-    ('4BHK','4BHK'),
-    
+    ('Plots & Houses', [
+        ('Plot', 'Plot'),
+        ('Raw House', 'Raw House'),
+    ]),
+    ('Residential', [
+        ('1BHK', '1BHK'),
+        ('2BHK', '2BHK'),
+        ('3BHK', '3BHK'),
+        ('4BHK', '4BHK'),
+    ]),
+    ('Commercial', [
+        ('Office', 'Office'),
+        ('Shop', 'Shop'),
+        ('Showroom', 'Showroom'),
+    ]),
 ]
 rera_approval = [
     ('Approved', 'Approved'),
@@ -71,4 +79,18 @@ class PropertyVideo(models.Model):
     def __str__(self):
         return f"{self.city} - {self.area} - {self.property_type}"
 
+class ContactLog(models.Model):
+    CONTACT_TYPE_CHOICES = [
+        ('WhatsApp', 'WhatsApp'),
+        ('Call', 'Call'),
+    ]
+    agent = models.ForeignKey('AgentProfile', on_delete=models.CASCADE)
+    agent_mobile = models.CharField(max_length=15)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    user_mobile = models.CharField(max_length=15, blank=True, null=True)
+    video = models.ForeignKey('PropertyVideo', on_delete=models.CASCADE)
+    contact_type = models.CharField(max_length=10, choices=CONTACT_TYPE_CHOICES)
+    contact_datetime = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return f"{self.user} ➔ {self.agent} ({self.contact_type})"
 

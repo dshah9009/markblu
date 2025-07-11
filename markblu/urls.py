@@ -20,11 +20,16 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls import handler404
-
+from info import views as info_views  # ✅ Import views separately
+import info.admin as info_admin   
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('agent/', include('info.urls_agent')),
-    path('',include('info.urls'))
+    path('',include('info.urls')),
+    path('admin-panel/contacts/', info_admin.admin_contact_logs, name='admin-contact-logs'),
+    path('admin-panel/video/<int:video_id>/', info_admin.admin_video_details, name='admin-video-details'),
+
+    
 ]
 
 

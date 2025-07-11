@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Video Details</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .btn { padding: 6px 10px; background: #007bff; color: white; border: none; border-radius: 4px; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <h1>Video Details</h1>
+    <a href="javascript:history.back()" class="btn">← Back</a>
+    <ul>
+        <li><strong>City:</strong> {{ video.city }}</li>
+        <li><strong>Area:</strong> {{ video.area }}</li>
+        <li><strong>Price:</strong> ₹{{ video.price }}</li>
+        <li><strong>Property Type:</strong> {{ video.property_type }}</li>
+        <li><strong>Properties:</strong> {{ video.properties }}</li>
+        <li><strong>RERA:</strong> {{ video.rera }}</li>
+        <li><strong>Token Amount:</strong> ₹{{ video.token_amount }}</li>
+        <li><strong>Size:</strong> {{ video.property_size_sqft }} sqft</li>
+    </ul>
+    <video controls width="500">
+        <source src="{{ video.video.url }}" type="video/mp4">
+        Your browser does not support video.
+    </video>
+</body>
+</html>

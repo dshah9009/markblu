@@ -227,7 +227,7 @@
                         <source src="{{ vid.video.url }}" type="video/mp4">
                     </video>
                     <p><strong>{{ vid.area }}</strong>, {{ vid.city }}</p>
-                    <p><strong>Price:</strong> ₹{{ vid.price }} Lakh</p>
+                    <p><strong>Price:</strong> ₹{{ vid.price }}</p>
                     <a href="{% url 'details' vid.id %}?from={{ request.get_full_path|urlencode }}" class="call-button">
                         View Details
                     </a>

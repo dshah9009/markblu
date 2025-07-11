@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Admin | Contact Logs</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            background: #f0f2f5;
+            color: #333;
+        }
+
+        h1 {
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        a.admin-link {
+            display: inline-block;
+            margin-bottom: 15px;
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 8px;
+            background: #fff;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        th,
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #f7f9fc;
+            color: #555;
+            text-align: left;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .btn {
+            padding: 8px 12px;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 13px;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 20px;
+            color: #777;
+            font-style: italic;
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 20px;
+            }
+
+            th,
+            td {
+                font-size: 13px;
+                padding: 10px 8px;
+            }
+
+            .btn {
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Contact Logs</h1>
+    <a href="/admin/" class="admin-link" target="_blank">← Back to Admin Panel</a>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date & Time</th>
+                    <th>Agent</th>
+                    <th>Agent Mobile</th>
+                    <th>User</th>
+                    <th>User Mobile</th>
+                    <th>Type</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td>{{ log.contact_datetime|date:"M j, Y, g:i a" }}</td>
+                    <td>{{ log.agent.user.get_full_name }}</td>
+                    <td>{{ log.agent.mobile }}</td>
+                    <td>{% if log.user %}{{ log.user.get_full_name }}{% else %}Guest{% endif %}</td>
+                    <td>
+                        {% if log.user and log.user.userprofile %}
+                        {{ log.user.userprofile.mobile }}
+                        {% else %}
+                        N/A
+                        {% endif %}
+                    </td>
+                    <td>{{ log.contact_type }}</td>
+                    <td>
+                        <a href="{% url 'admin-video-details' log.video.id %}" class="btn" target="_blank">View</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="no-data">No contact logs found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>
