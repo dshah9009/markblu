@@ -1,6 +1,7 @@
 from django.db.models import Value
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render, get_object_or_404
-from .models_agent import PropertyVideo
+from .models_agent import PropertyVideo, ContactLog
 from django.template import RequestContext
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
@@ -62,10 +63,6 @@ def property_filter_view(request):
         filters["area"] = area
     if price:
         filters["price"] = price
-    # if min_price:
-    #     filters["price_min__gte"] = min_price
-    # if max_price:
-    #     filters["price_max__lte"] = max_price
     if property_type:
         filters["property_type"] = property_type
     if properties:
@@ -124,18 +121,35 @@ def user_login(request):
                 })
     return render(request, "user/login.html")
 
-def schedule_whatsapp_redirect(request, video_id):
-    if not request.user.is_authenticated:
-        return redirect(f"{reverse('user-login')}?next={request.path}")
-
+@login_required
+def log_call_and_redirect(request, video_id):
     video = get_object_or_404(PropertyVideo, id=video_id)
-    area = video.area
-    city = video.city
-    mobile = video.agent.mobile
-    full_number = f"91{mobile}"
-    message = f"Hi, I want to schedule a visit for the property in {area}, {city}"
-    whatsapp_url = f"https://wa.me/{full_number}?text={message.replace(' ', '%20')}"
+    ContactLog.objects.create(
+        agent=video.agent,
+        user=request.user,
+        video=video,
+        contact_type='Call'
+    )
+    return render(request, 'user/call_redirect.html', {
+        'agent_mobile': video.agent.mobile
+    })
 
+
+
+@login_required
+def log_whatsapp_and_redirect(request, video_id):
+    video = get_object_or_404(PropertyVideo, id=video_id)
+    ContactLog.objects.create(
+        agent=video.agent,
+        user=request.user,
+        video=video,
+        contact_type='WhatsApp'
+    )
+    mobile = video.agent.mobile
+    city = video.city
+    area = video.area
+    message = f"Hi, I want to schedule a visit for the property in {area}, {city}"
+    whatsapp_url = f"https://wa.me/91{mobile}?text={message.replace(' ', '%20')}"
     return redirect(whatsapp_url)
 
 def detail_view(request, video_id):

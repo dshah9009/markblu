@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MarkBlu Reels</title>
+  <title>MarkBlu feed</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
@@ -145,44 +145,52 @@
         </div>
       </div>
 
-     <!-- 📦 Bottom Info (High Contrast Version) -->
-<div class="reel-content text-base leading-relaxed space-y-3 mt-4 text-gray-100">
-  <div class="flex flex-wrap items-center gap-2">
-    <span class="bg-green-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
-      RERA: {{ video.rera }}
-    </span>
-    <span class="bg-gray-900 text-white px-3 py-1 rounded-full text-sm font-semibold">
-      Token: ₹{{ video.token_amount }}
-    </span>
-  </div>
+      <!-- 📦 Bottom Info (High Contrast Version) -->
+      <div class="reel-content text-base leading-relaxed space-y-3 mt-4 text-gray-100">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="bg-green-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
+            RERA: {{ video.rera }}
+          </span>
+          <span class="bg-gray-900 text-white px-3 py-1 rounded-full text-sm font-semibold">
+            Token: ₹{{ video.token_amount }}
+          </span>
+        </div>
 
-  <div>
-    <a href="{% url 'details' video.id %}?from={{ request.get_full_path|urlencode }}"
-       class="text-blue-400 font-semibold underline hover:text-blue-300 transition">
-      Broker Details:
-    </a>
-    <span class="ml-1 font-medium">
-      {{ video.agent.user.first_name }} {{ video.agent.user.last_name }}
-    </span>
-  </div>
+        <div>
+          <a href="{% url 'details' video.id %}?from={{ request.get_full_path|urlencode }}"
+            class="text-blue-400 font-semibold underline hover:text-blue-300 transition">
+            Broker Details:
+          </a>
+          <span class="ml-1 font-medium">
+            {{ video.agent.user.first_name }} {{ video.agent.user.last_name }}
+          </span>
+        </div>
 
-  <div class="space-y-1">
-    <p><strong>Project:</strong> {{ video.agent.company_name }}</p>
-    <p><strong>Market Price:</strong> ₹{{ video.price }}</p>
-    <p><strong>guideline:</strong> ₹{{ video.guideline_per_sqft }}/sqft</p>
-    <p><strong>Size:</strong> {{ video.property_size_sqft }} sqft</p>
-  </div>
-</div>
+        <div class="space-y-1">
+          <p><strong>Project:</strong> {{ video.agent.company_name }}</p>
+          <p><strong>Market Price:</strong> ₹{{ video.price }}</p>
+          <p><strong>guideline:</strong> ₹{{ video.guideline_per_sqft }}/sqft</p>
+          <p><strong>Size:</strong> {{ video.property_size_sqft }} sqft</p>
+        </div>
+      </div>
 
 
       <!-- 🔘 Sidebar Actions -->
       <div class="actions-sidebar">
-        <div class="action-item"
-          onclick="{% if user.is_authenticated %}window.location.href='tel:{{ video.agent.mobile }}'{% else %}window.location.href='{% url 'user-login' %}?next={{ request.get_full_path|urlencode }}'{% endif %}">
+        <!-- ✅ Call Button (Logs Contact Automatically) -->
+        <!-- ✅ Correct Call Button -->
+        <a class="action-item" href="{% if user.is_authenticated %}
+    {% url 'log-call' video.id %}
+  {% else %}
+    {% url 'user-login' %}?next={{ request.get_full_path|urlencode }}
+  {% endif %}">
           <span class="material-icons">call</span> Call Broker
-        </div>
-
-        <a class="action-item" href="{% url 'schedule_whatsapp' video.id %}">
+        </a>
+        <a class="action-item" href="{% if user.is_authenticated %}
+    {% url 'log-whatsapp' video.id %}
+  {% else %}
+    {% url 'user-login' %}?next={{ request.get_full_path|urlencode }}
+  {% endif %}">
           <i class="fab fa-whatsapp fa-3x"></i> WhatsApp
         </a>
 
