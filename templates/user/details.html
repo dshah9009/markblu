@@ -173,7 +173,7 @@
                 </div>
                 <div class="info-col">
                     <p><span class="label">Office Address:</span> {{ agent.office_address }}</p>
-                    <p><span class="label">Project Location:</span> {{ agent.project_location }}</p>
+                    <p><span class="label">Location:</span> {{ agent.project_location }}</p>
                     <p><span class="label">Experience:</span> {{ agent.experience }} years</p>
                     <p><span class="label">Deals in:</span>
                         {% for deal in agent.deal.all %}
@@ -200,7 +200,7 @@
                     <p><span class="label">Area:</span> {{ video.area }}</p>
                     <p><span class="label">Property Type:</span> {{ video.property_type }}</p>
                     <p><span class="label">Category:</span> {{ video.properties }}</p>
-                    <p style="margin-top: 10px;"><span class="label">Market Price:</span> ₹{{ video.price }}</p>
+                    <p style="margin-top: 10px;"><span class="label">Price:</span> ₹{{ video.price }}</p>
                 </div>
                 <div class="info-col">
                     <p><span class="label">RERA Approved:</span> {{ video.rera }}</p>
