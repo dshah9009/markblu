@@ -1,3 +1,5 @@
+{% load static %}
+{% load price_filters %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -177,8 +179,14 @@
         </div>
 
         <div class="space-y-1">
+          {% if video.agent.company_name %}
           <p><strong>Company:</strong> {{ video.agent.company_name }}</p>
-          <p><strong>Price:</strong> ₹{{ video.price }}</p>
+          {% endif %}
+
+          {% if video.agent.project_name %}
+          <p><strong>Project:</strong> {{ video.agent.project_name }}</p>
+          {% endif %}
+          <p><strong>Price:</strong> ₹{{ video.price|format_inr }}</p>
           <p><strong>guideline:</strong> ₹{{ video.guideline_per_sqft }}/sqft</p>
           <p><strong>Size:</strong> {{ video.property_size_sqft }} sqft</p>
         </div>

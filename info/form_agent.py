@@ -5,7 +5,7 @@ class PropertyVideoForm(forms.ModelForm):
     class Meta:
         model = PropertyVideo
         fields = [ 'city', 'area', 'price', #'price_max',
-            'property_type', 'properties', 'guideline_per_sqft',
+            'property_type', 'properties','project_name', 'guideline_per_sqft',
             'token_amount', 'property_size_sqft', 'rera', 'payment_condition',
             'video',
         ]
