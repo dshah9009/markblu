@@ -4,3 +4,4 @@ info/migrations/__pycache__/
 markblu/__pycache__/
 media/
 .env
+info/templatetags/__pycache__/

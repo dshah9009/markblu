@@ -67,6 +67,7 @@ class PropertyVideo(models.Model):
     price = models.IntegerField()
     property_type = models.CharField(max_length=10, choices=PROPERTY_TYPES)
     properties = models.CharField(max_length=10 , choices=PROPERTIES)
+    project_name = models.CharField(max_length=100, blank=True, null=True)
     guideline_per_sqft = models.IntegerField()
     token_amount = models.DecimalField(max_digits=10, decimal_places=2)
     property_size_sqft = models.IntegerField()

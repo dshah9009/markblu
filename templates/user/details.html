@@ -1,3 +1,4 @@
+{% load price_filters %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -195,22 +196,25 @@
             </video>
             <div class="info-row" style="margin-top: 1rem;">
                 <div class="info-col">
-                    
+
                     <p><span class="label">City:</span> {{ video.city }}</p>
                     <p><span class="label">Area:</span> {{ video.area }}</p>
+                    {% if video.project_name %}
+                    <p><span class="label">Project:</span> {{ video.project_name }}</p>
+                    {% endif %}
                     <p><span class="label">Property Type:</span> {{ video.property_type }}</p>
                     <p><span class="label">Category:</span> {{ video.properties }}</p>
-                    <p style="margin-top: 10px;"><span class="label">Price:</span> ₹{{ video.price }}</p>
+                    <p style="margin-top: 10px;"><span class="label">Price:</span> ₹{{ video.price|format_inr }}</p>
                 </div>
                 <div class="info-col">
                     <p><span class="label">RERA Approved:</span> {{ video.rera }}</p>
                     <p><span class="label">Size:</span> {{ video.property_size_sqft }} sqft</p>
                     <p><span class="label">Guideline:</span> ₹{{ video.guideline_per_sqft }}/sqft</p>
                     <p><span class="label">Token Amount:</span> ₹{{ video.token_amount }}</p>
-                    
+
                 </div>
             </div>
-            
+
             {% if video.payment_condition %}
             <p><span class="label">Payment Condition:</span> {{ video.payment_condition }}</p>
             {% endif %}
@@ -227,7 +231,7 @@
                         <source src="{{ vid.video.url }}" type="video/mp4">
                     </video>
                     <p><strong>{{ vid.area }}</strong>, {{ vid.city }}</p>
-                    <p><strong>Price:</strong> ₹{{ vid.price }}</p>
+                    <p><strong>Price:</strong> ₹{{ vid.price|format_inr }}</p>
                     <a href="{% url 'details' vid.id %}?from={{ request.get_full_path|urlencode }}" class="call-button">
                         View Details
                     </a>
