@@ -20,7 +20,7 @@
       align-items: center;
       justify-content: center;
     }
-
+    
     .container {
       max-width: 420px;
       width: 100%;
@@ -187,6 +187,13 @@
 
       <!-- Search Button -->
       <button type="submit" class="search-btn">Search</button>
+
+      <div style="position: fixed; top: 20px; right: 20px; z-index: 1000;">
+  <a href="{% url 'agent-login' %}"
+    class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded shadow-md transition">
+    Login as Agent
+  </a>
+</div>
     </form>
   </div>
 
