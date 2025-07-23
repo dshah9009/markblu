@@ -5,6 +5,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="google-site-verification" content="2NKQrL_psW_Ob9Q0S37FOENqTZonmAUamBNpmseIJVk" />
+  <meta name="description"
+    content="MarkBlu is your trusted platform to find verified real estate listings, agents, and property videos. Discover your dream property today.">
+  <meta name="keywords"
+    content="real estate, property, buy house, rent house, room, flat, rent, house, plot, property videos, verified agents, markblu">
+  <meta name="author" content="MarkBlu Team">
   <link rel="icon" href="{% static 'images/markblu-logo.png' %}" type="image/x-icon">
 
   <title>MarkBlu</title>
@@ -20,7 +25,7 @@
       align-items: center;
       justify-content: center;
     }
-    
+
     .container {
       max-width: 420px;
       width: 100%;
@@ -189,11 +194,11 @@
       <button type="submit" class="search-btn">Search</button>
 
       <div style="position: fixed; top: 20px; right: 20px; z-index: 1000;">
-  <a href="{% url 'agent-login' %}"
-    class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded shadow-md transition">
-    Login as Agent
-  </a>
-</div>
+        <a href="{% url 'agent-login' %}"
+          class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded shadow-md transition">
+          Login as Agent
+        </a>
+      </div>
     </form>
   </div>
 
