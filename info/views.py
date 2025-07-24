@@ -19,23 +19,32 @@ def user_filter_page(request):
         # price_max = request.POST.get("price_max", "")
         property_type = request.POST.get("property_type", "")
         properties = request.POST.get("properties", "")
+        budget = request.POST.get("budget", "")
 
 
 
-        query = f"?city={city}&area={area}&property_type={property_type}&properties={properties}"
+        query = f"?city={city}&area={area}&property_type={property_type}&properties={properties}&budget={budget}"
         return redirect('/feed/' + query)
 
     # Get distinct values from uploaded videos
     cities = PropertyVideo.objects.values_list('city', flat=True).distinct()
     areas = PropertyVideo.objects.values_list('area', flat=True).distinct()
     properties_choices = PropertyVideo._meta.get_field('properties').choices
+    budget_ranges = [
+        ("0-1000000", "Below ₹10 Lakh"),
+        ("1000000-3000000", "₹10 Lakh - ₹30 Lakh"),
+        ("3000000-5000000", "₹30 Lakh - ₹50 Lakh"),
+        ("5000000-10000000", "₹50 Lakh - ₹1 Cr"),
+        ("10000000-", "Above ₹1 Cr"),
+    ]
 
 
 
     return render(request, 'user/filter.html', {
         'cities': cities,
         'areas': areas,
-        'properties_choices' : properties_choices
+        'properties_choices' : properties_choices,
+        'budget_ranges': budget_ranges
     })
  
 
@@ -50,11 +59,10 @@ def property_filter_view(request):
     if request.method == 'GET':
         city = request.GET.get('city')
         area = request.GET.get('area')
-        #min_price = request.GET.get('min_price')
-        #max_price = request.GET.get('max_price')
         price = request.GET.get('price')
         property_type = request.GET.get('property_type')
         properties = request.GET.get('properties')
+        budget = request.GET.get('budget')
 
     filters = {}
     if city:
@@ -68,13 +76,22 @@ def property_filter_view(request):
     if properties:
         filters["properties"] = properties
 
-    videos = PropertyVideo.objects.filter(**filters)
+    if budget:
+        try:
+            min_price, max_price = budget.split("-")
+            if min_price:
+                filters["price__gte"] = int(min_price)
+            if max_price:
+                filters["price__lte"] = int(max_price)
+        except:
+            pass
+
+    videos = PropertyVideo.objects.filter(**filters).order_by('-uploaded_at')
 
     no_results = False
     if not videos.exists() and property_type:
         no_results = True
-        videos = PropertyVideo.objects.filter(property_type=property_type)
-
+        videos = PropertyVideo.objects.filter(property_type=property_type).order_by('-uploaded_at')
     return render(request, "user/feed.html", {
         "videos": videos,
         "no_results": no_results,

@@ -183,11 +183,9 @@
       <!-- Budget Dropdown -->
       <select name="budget">
         <option value="">Select Budget (optional)</option>
-        <option value="0-1000000">Below ₹10 Lakh</option>
-        <option value="1000000-3000000">₹10 Lakh - ₹30 Lakh</option>
-        <option value="3000000-5000000">₹30 Lakh - ₹50 Lakh</option>
-        <option value="5000000-10000000">₹50 Lakh - ₹1 Cr</option>
-        <option value="10000000-">Above ₹1 Cr</option>
+        {% for value, label in budget_ranges %}
+        <option value="{{ value }}">{{ label }}</option>
+        {% endfor %}
       </select>
 
       <!-- Search Button -->
