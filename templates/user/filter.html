@@ -121,6 +121,44 @@
       color: #555;
       text-align: center;
     }
+
+    .slider-container {
+      margin: 20px 0;
+    }
+
+    .slider-label {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      appearance: none;
+      height: 8px;
+      background: #ddd;
+      border-radius: 4px;
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: #003c8f;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      background: #003c8f;
+      border-radius: 50%;
+      cursor: pointer;
+    }
   </style>
 
   <script>
@@ -130,6 +168,24 @@
       document.getElementById("btn-buy").classList.remove("active");
       document.getElementById("btn-" + type.toLowerCase()).classList.add("active");
     }
+
+    function updateBudgetValue() {
+      const slider = document.getElementById('budget_slider');
+      const output = document.getElementById('budget_value');
+      const value = parseInt(slider.value);
+
+      if (value === 0) {
+        output.textContent = "No Limit";
+      } else {
+        const amount = value * 10000
+        output.textContent = "₹" + amount.toLocaleString('en-IN');
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      updateBudgetValue();
+      document.getElementById('budget_slider').addEventListener('input', updateBudgetValue);
+    });
   </script>
 </head>
 
@@ -144,12 +200,12 @@
         <img src="{% static 'images/markblu-logo.png' %}" alt="MarkBlu Logo">
         <div class="toggle-buttons">
           <button type="button" id="btn-buy" onclick="setType('Buy')">Buy</button>
-          <button type="button" id="btn-rent" class="active" onclick="setType('Rent')">Rent</button>
+          <button type="button" id="btn-rent" class="active" onclick="setType('Buy')">Buy</button>
         </div>
       </div>
 
       <!-- Hidden field -->
-      <input type="hidden" name="property_type" id="property_type" value="Rent">
+      <input type="hidden" name="property_type" id="property_type" value="Buy">
 
       <!-- City Dropdown -->
       <select name="city" required>
@@ -179,14 +235,14 @@
         {% endfor %}
       </select>
 
-
-      <!-- Budget Dropdown -->
-      <select name="budget">
-        <option value="">Select Budget (optional)</option>
-        {% for value, label in budget_ranges %}
-        <option value="{{ value }}">{{ label }}</option>
-        {% endfor %}
-      </select>
+      <!-- Budget Slider -->
+      <div class="slider-container">
+        <div class="slider-label">
+          <span>Budget</span>
+          <span id="budget_value">No Limit</span>
+        </div>
+        <input type="range" id="budget_slider" name="budget" min="0" max="5000" step="1" value="0">
+      </div>
 
       <!-- Search Button -->
       <button type="submit" class="search-btn">Search</button>

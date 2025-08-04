@@ -78,11 +78,14 @@ def property_filter_view(request):
 
     if budget:
         try:
-            min_price, max_price = budget.split("-")
-            if min_price:
-                filters["price__gte"] = int(min_price)
-            if max_price:
-                filters["price__lte"] = int(max_price)
+            # min_price, max_price = budget.split("-")
+            # if min_price:
+            #     filters["price__gte"] = int(min_price)
+            # if max_price:
+            #     filters["price__lte"] = int(max_price)
+            budget_value = int(budget) * 10000  # Convert slider value to ₹
+            if budget_value > 0:
+                filters["price__lte"] = budget_value
         except:
             pass
 
