@@ -91,7 +91,8 @@ def agent_dashboard(request):
     })
 
 
-@login_required 
+
+@login_required
 @transaction.atomic
 def upload_property(request):
     agent_profile = AgentProfile.objects.get(user=request.user)
@@ -99,7 +100,7 @@ def upload_property(request):
         form = PropertyVideoForm(request.POST, request.FILES)
         if form.is_valid():
             video = form.save(commit=False)
-            video.agent = agent_profile  # ✅ updated field
+            video.agent = agent_profile
             video.save()
             return redirect('agent-dashboard')
     else:

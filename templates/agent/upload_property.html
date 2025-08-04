@@ -111,6 +111,12 @@
         .back-link:hover {
             text-decoration: underline;
         }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 
@@ -122,12 +128,34 @@
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
+
+            {% if form.errors %}
+            <div class="error-message">
+                {% for field in form %}
+                {% for error in field.errors %}
+                <div>{{ field.label }}: {{ error }}</div>
+                {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                <div>{{ error }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
             <button type="submit">Upload Property</button>
         </form>
 
         <a href="{% url 'agent-dashboard' %}" class="back-link">← Back to Dashboard</a>
     </div>
 
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const fileInputs = document.querySelectorAll('input[type="file"]');
+            fileInputs.forEach(input => {
+                input.setAttribute('accept', 'video/*');
+            });
+        });
+    </script>
 </body>
 
 </html>
