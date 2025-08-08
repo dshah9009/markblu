@@ -5,3 +5,4 @@ markblu/__pycache__/
 media/
 .env
 info/templatetags/__pycache__/
+markblu.log
