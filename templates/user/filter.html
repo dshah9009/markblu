@@ -164,8 +164,8 @@
   <script>
     function setType(type) {
       document.getElementById("property_type").value = type;
-      document.getElementById("btn-rent").classList.remove("active");
       document.getElementById("btn-buy").classList.remove("active");
+      document.getElementById("btn-rent").classList.remove("active");
       document.getElementById("btn-" + type.toLowerCase()).classList.add("active");
     }
 
@@ -177,7 +177,7 @@
       if (value === 0) {
         output.textContent = "No Limit";
       } else {
-        const amount = value * 10000
+        const amount = value * 10000;
         output.textContent = "₹" + amount.toLocaleString('en-IN');
       }
     }
@@ -195,12 +195,12 @@
     <form method="POST">
       {% csrf_token %}
 
-      <!-- Logo and Toggle Buttons Together -->
+      <!-- Logo and Toggle Buttons -->
       <div class="logo">
         <img src="{% static 'images/markblu-logo.png' %}" alt="MarkBlu Logo">
         <div class="toggle-buttons">
-          <button type="button" id="btn-buy" onclick="setType('Rent')">Rent</button>
-          <button type="button" id="btn-rent" class="active" onclick="setType('Buy')">Buy</button>
+          <button type="button" id="btn-buy" class="active" onclick="setType('Buy')">Buy</button>
+          <button type="button" id="btn-rent" onclick="setType('Rent')">Rent</button>
         </div>
       </div>
 
