@@ -9,6 +9,8 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseForbidden
 from django.contrib.auth import logout
 from django.db import transaction
+import logging
+logger = logging.getLogger('info')
 
 @transaction.atomic
 def agent_register(request):
