@@ -5,11 +5,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="google-site-verification" content="2NKQrL_psW_Ob9Q0S37FOENqTZonmAUamBNpmseIJVk" />
-  <meta name="description"
-    content="MarkBlu is your trusted platform to find verified real estate listings, agents, and property videos. Discover your dream property today.">
-  <meta name="keywords"
-    content="real estate, property, buy house, rent house, room, flat, rent, house, plot, property videos, verified agents, markblu">
-  <meta name="author" content="MarkBlu Team">
+  <!-- Meta Pixel Code -->
+  <script>
+    !function (f, b, e, v, n, t, s) {
+      if (f.fbq) return; n = f.fbq = function () {
+        n.callMethod ?
+        n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+      };
+      if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+      n.queue = []; t = b.createElement(e); t.async = !0;
+      t.src = v; s = b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t, s)
+    }(window, document, 'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '4254302984827541');
+    fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=4254302984827541&ev=PageView&noscript=1" /></noscript>
+  <!-- End Meta Pixel Code -->
   <link rel="icon" href="{% static 'images/markblu-logo.png' %}" type="image/x-icon">
 
   <title>MarkBlu</title>
