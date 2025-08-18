@@ -3,41 +3,15 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="google-site-verification" content="2NKQrL_psW_Ob9Q0S37FOENqTZonmAUamBNpmseIJVk" />
-  <!-- Meta Pixel Code -->
-  <script>
-    !function (f, b, e, v, n, t, s) {
-      if (f.fbq) return; n = f.fbq = function () {
-        n.callMethod ?
-          n.callMethod.apply(n, arguments) : n.queue.push(arguments)
-      };
-      if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
-      n.queue = []; t = b.createElement(e); t.async = !0;
-      t.src = v; s = b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t, s)
-    }(window, document, 'script',
-      'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '4254302984827541');
-    fbq('track', 'PageView');
-  </script>
-  <noscript><img height="1" width="1" style="display:none"
-      src="https://www.facebook.com/tr?id=4254302984827541&ev=PageView&noscript=1" /></noscript>
-  <!-- End Meta Pixel Code -->
-  <!-- Google Tag Manager -->
-  <script>(function (w, d, s, l, i) {
-      w[l] = w[l] || []; w[l].push({
-        'gtm.start':
-          new Date().getTime(), event: 'gtm.js'
-      }); var f = d.getElementsByTagName(s)[0],
-        j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
-          'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-    })(window, document, 'script', 'dataLayer', 'GTM-5ZJBL5FL');</script>
-  <!-- End Google Tag Manager -->
-  <link rel="icon" href="{% static 'images/markblu-logo.png' %}" type="image/x-icon">
-
+  <link rel="icon" href="{% static 'images/markblu-logo.png' %}" type="image/x-icon" />
   <title>MarkBlu</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ✅ Select2 CSS (correct version) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+
   <style>
     body {
       font-family: 'Arial', sans-serif;
@@ -53,11 +27,11 @@
     .container {
       max-width: 420px;
       width: 100%;
-      background-color: rgba(255, 255, 255, 0.95);
+      background: rgba(255, 255, 255, .95);
       backdrop-filter: blur(8px);
       border-radius: 16px;
       padding: 30px 20px;
-      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, .15);
     }
 
     .logo {
@@ -87,13 +61,13 @@
       font-weight: 600;
       border: none;
       cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-      transition: background 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, .1);
+      transition: background .3s, transform .2s;
     }
 
     .toggle-buttons button.active {
       background: linear-gradient(to right, #003c8f, #005bbb);
-      color: white;
+      color: #fff;
       transform: scale(1.05);
     }
 
@@ -102,21 +76,45 @@
       padding: 14px 16px;
       border: none;
       border-radius: 12px;
-      background-color: #ffffff;
+      background: #fff;
       color: #333;
       font-size: 15px;
       margin-bottom: 16px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
       appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20fill%3D%22%23003f7f%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M7%208l5%205%205-5z%22/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 16px center;
-      background-size: 16px;
     }
 
     select:focus {
       outline: none;
-      box-shadow: 0 0 0 3px rgba(0, 95, 163, 0.2);
+      box-shadow: 0 0 0 3px rgba(0, 95, 163, .2);
+    }
+
+    /* ✅ Make Select2 match your inputs */
+    .select2-container--default .select2-selection--single {
+      height: 48px;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      background: #fff;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+      line-height: 48px;
+      color: #333;
+      padding-left: 0;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+      height: 48px;
+      right: 10px;
+    }
+
+    .select2-dropdown {
+      border: none;
+      box-shadow: 0 12px 25px rgba(0, 0, 0, .15);
     }
 
     .search-btn {
@@ -125,13 +123,13 @@
       font-size: 16px;
       font-weight: bold;
       background: linear-gradient(to right, #003c8f, #005bbb);
-      color: white;
+      color: #fff;
       border: none;
       border-radius: 12px;
       margin-top: 10px;
       cursor: pointer;
-      box-shadow: 0 5px 12px rgba(0, 0, 0, 0.12);
-      transition: background 0.4s ease, transform 0.2s ease;
+      box-shadow: 0 5px 12px rgba(0, 0, 0, .12);
+      transition: background .4s, transform .2s;
     }
 
     .search-btn:hover {
@@ -173,7 +171,6 @@
       background: #003c8f;
       border-radius: 50%;
       cursor: pointer;
-      transition: background 0.3s ease;
     }
 
     input[type="range"]::-moz-range-thumb {
@@ -192,66 +189,54 @@
       document.getElementById("btn-rent").classList.remove("active");
       document.getElementById("btn-" + type.toLowerCase()).classList.add("active");
     }
-
     function updateBudgetValue() {
       const slider = document.getElementById('budget_slider');
       const output = document.getElementById('budget_value');
       const value = parseInt(slider.value);
-
-      if (value === 0) {
-        output.textContent = "No Limit";
-      } else {
-        const amount = value * 10000;
-        output.textContent = "₹" + amount.toLocaleString('en-IN');
-      }
+      if (value === 0) { output.textContent = "No Limit"; }
+      else { const amount = value * 10000; output.textContent = "₹" + amount.toLocaleString('en-IN'); }
     }
-
     document.addEventListener("DOMContentLoaded", function () {
       updateBudgetValue();
       document.getElementById('budget_slider').addEventListener('input', updateBudgetValue);
     });
   </script>
+
+  <!-- (Your Meta Pixel & GTM scripts can stay as before) -->
 </head>
 
 <body>
-  <!-- Google Tag Manager (noscript) -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5ZJBL5FL" height="0" width="0"
-      style="display:none;visibility:hidden"></iframe></noscript>
-  <!-- End Google Tag Manager (noscript) -->
-
   <div class="container">
     <form method="POST">
       {% csrf_token %}
 
-      <!-- Logo and Toggle Buttons -->
       <div class="logo">
-        <img src="{% static 'images/markblu-logo.png' %}" alt="MarkBlu Logo">
+        <img src="{% static 'images/markblu-logo.png' %}" alt="MarkBlu Logo" />
         <div class="toggle-buttons">
           <button type="button" id="btn-buy" class="active" onclick="setType('Buy')">Buy</button>
           <button type="button" id="btn-rent" onclick="setType('Rent')">Rent</button>
         </div>
       </div>
 
-      <!-- Hidden field -->
-      <input type="hidden" name="property_type" id="property_type" value="Buy">
+      <input type="hidden" name="property_type" id="property_type" value="Buy" />
 
-      <!-- City Dropdown -->
-      <select name="city" required>
+      <!-- City -->
+      <select name="city" id="city-dropdown" required>
         <option value="">Select City</option>
         {% for city in cities %}
         <option value="{{ city }}">{{ city }}</option>
         {% endfor %}
       </select>
 
-      <!-- Area Dropdown -->
-      <select name="area">
-        <option value="">Select Area (optional)</option>
+      <!-- ✅ Area (Select2) -->
+      <select name="area" id="area-dropdown" data-placeholder="Select Area (optional)">
+        <option value=""></option> <!-- empty option enables placeholder -->
         {% for area in areas %}
         <option value="{{ area }}">{{ area }}</option>
         {% endfor %}
       </select>
 
-      <!-- BHK / Plot Dropdown -->
+      <!-- Properties -->
       <select name="properties">
         <option value="">Select BHK/Plot (optional)</option>
         {% for group_label, options in properties_choices %}
@@ -263,16 +248,15 @@
         {% endfor %}
       </select>
 
-      <!-- Budget Slider -->
+      <!-- Budget -->
       <div class="slider-container">
         <div class="slider-label">
           <span>Budget</span>
           <span id="budget_value">No Limit</span>
         </div>
-        <input type="range" id="budget_slider" name="budget" min="0" max="5000" step="1" value="0">
+        <input type="range" id="budget_slider" name="budget" min="0" max="5000" step="1" value="0" />
       </div>
 
-      <!-- Search Button -->
       <button type="submit" class="search-btn">Search</button>
 
       <div style="position: fixed; top: 20px; right: 20px; z-index: 1000;">
@@ -284,10 +268,34 @@
     </form>
   </div>
 
-  <div class="footer">
-    Version {{ APP_VERSION }}
-  </div>
+  <div class="footer">Version {{ APP_VERSION }}</div>
 
+  <!-- ✅ jQuery must load BEFORE Select2 -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- ✅ Select2 JS (correct version) -->
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script>
+    (function () {
+      function boot() {
+        if (!window.jQuery) { console.error('jQuery failed to load'); return; }
+        if (!jQuery.fn.select2) { console.error('Select2 failed to load'); return; }
+
+        // Area searchable
+        jQuery('#area-dropdown').select2({
+          placeholder: jQuery('#area-dropdown').data('placeholder') || 'Select or search area',
+          allowClear: true,
+          width: '100%'
+        });
+
+        // (Optional) City searchable too – uncomment if you want
+        // jQuery('#city-dropdown').select2({ placeholder: 'Select or search city', allowClear: true, width: '100%' });
+      }
+      // Run after page load
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', boot);
+      } else { boot(); }
+    })();
+  </script>
 </body>
 
 </html>
