@@ -186,3 +186,35 @@ def detail_view(request, video_id):
 
 def custom_404(request, exception):
     return render(request, 'user/404.html', status=404)
+
+from django.contrib.auth import login, get_user_model
+from django.shortcuts import render, redirect
+from .models import UserProfile
+
+User = get_user_model()
+
+def mobile_login(request):
+    if request.method == "POST":
+        mobile = request.POST.get("mobile")
+
+        if not mobile:
+            return render(request, "user/mobile_login.html", {
+                "error": "Please enter a mobile number."
+            })
+
+        # try to find user by mobile
+        try:
+            profile = UserProfile.objects.get(mobile=mobile)
+            user = profile.user
+        except UserProfile.DoesNotExist:
+            # create user + profile if not found
+            user = User.objects.create(username=mobile)
+            profile = UserProfile.objects.create(user=user, mobile=mobile)
+
+        # log them in
+        login(request, user)
+
+        next_url = request.GET.get("next", "filter")
+        return redirect(next_url)
+
+    return render(request, "user/login.html")

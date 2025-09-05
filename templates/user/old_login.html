@@ -1,4 +1,3 @@
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -8,14 +7,13 @@
   <!-- Google Tag Manager -->
   <script>(function (w, d, s, l, i) {
       w[l] = w[l] || []; w[l].push({
-        'gtm.start': new Date().getTime(), event: 'gtm.js'
+        'gtm.start':
+          new Date().getTime(), event: 'gtm.js'
       }); var f = d.getElementsByTagName(s)[0],
         j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
           'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
     })(window, document, 'script', 'dataLayer', 'GTM-5ZJBL5FL');</script>
   <!-- End Google Tag Manager -->
-
-  <!-- Microsoft Clarity -->
   <script type="text/javascript">
     (function (c, l, a, r, i, t, y) {
       c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
@@ -23,8 +21,6 @@
       y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
     })(window, document, "clarity", "script", "sytbfko0ai");
   </script>
-  <!-- End Microsoft Clarity -->
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign in - MarkBlu</title>
   <style>
@@ -33,11 +29,12 @@
       background: radial-gradient(circle at top left, #e0f7fa, #f1f8ff);
       min-height: 100vh;
       margin: 0;
-      padding: 40px 20px;
+      padding: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      padding: 40px 20px;
     }
 
     .form-container {
@@ -99,6 +96,21 @@
       transform: translateY(-2px);
     }
 
+    .register-link {
+      margin-top: 18px;
+      font-size: 14px;
+    }
+
+    .register-link a {
+      color: #0077cc;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .register-link a:hover {
+      text-decoration: underline;
+    }
+
     .error {
       background: #fdecea;
       color: #c0392b;
@@ -115,17 +127,30 @@
       color: #555;
       text-align: center;
     }
+
+    @media (max-width: 480px) {
+      h2 {
+        font-size: 20px;
+      }
+
+      button {
+        padding: 13px;
+        font-size: 15px;
+      }
+
+      input {
+        padding: 13px;
+        font-size: 14px;
+      }
+    }
   </style>
 </head>
 
 <body>
   <!-- Google Tag Manager (noscript) -->
-  <noscript>
-    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5ZJBL5FL" height="0" width="0"
-      style="display:none;visibility:hidden"></iframe>
-  </noscript>
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5ZJBL5FL" height="0" width="0"
+      style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
-
   <div class="form-container">
     <img src="{% static 'images/markblu-logo.png' %}" alt="MarkBlu Logo">
     <h2>Sign in</h2>
@@ -136,9 +161,14 @@
 
     <form method="POST">
       {% csrf_token %}
-      <input type="text" name="mobile" placeholder="Enter mobile number" required>
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="password" name="password" placeholder="Password" required>
       <button type="submit">Login</button>
     </form>
+
+    <div class="register-link">
+      Don’t have an account? <a href="{% url 'register' %}">Create an account</a>
+    </div>
   </div>
 
   <div class="footer">
