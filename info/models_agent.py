@@ -70,7 +70,7 @@ class PropertyVideo(models.Model):
     project_name = models.CharField(max_length=100, blank=True, null=True)
     guideline_per_sqft = models.IntegerField()
     token_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    property_size_sqft = models.IntegerField()
+    property_size_sqft = models.CharField(max_length=100)
     rera = models.CharField(max_length=10, choices=rera_approval, blank=True, null=True)
     payment_condition = models.CharField(max_length=150, blank=True, null=True)
     video = models.FileField(upload_to='property_videos/')
