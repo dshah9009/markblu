@@ -16,12 +16,12 @@
     })(window, document, 'script', 'dataLayer', 'GTM-5ZJBL5FL');</script>
   <!-- End Google Tag Manager -->
   <script type="text/javascript">
-    (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    (function (c, l, a, r, i, t, y) {
+      c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+      t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+      y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
     })(window, document, "clarity", "script", "sytbfko0ai");
-</script>
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MarkBlu feed</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
@@ -255,14 +255,7 @@
       }, 1000);
     }
 
-    videos.forEach(video => {
-      video.addEventListener("click", () => {
-        isMuted = !isMuted;
-        video.muted = isMuted;
-        showMuteIcon(video, isMuted);
-      });
-    });
-
+    // IntersectionObserver: plays only active video
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         const video = entry.target;
@@ -273,6 +266,7 @@
               v.pause();
               v.currentTime = 0;
               v.muted = true;
+              v.dataset.unlocked = ""; // reset preview lock
             }
           });
 
@@ -286,11 +280,35 @@
           video.pause();
         }
       });
-    }, {
-      threshold: 0.9
-    });
+    }, { threshold: 0.9 });
 
+    // Preview + unlock logic
     videos.forEach(video => {
+      const previewLimit = 5; // seconds preview
+
+      // stop at preview limit if not unlocked
+      video.addEventListener("timeupdate", () => {
+        if (video.currentTime >= previewLimit && !video.dataset.unlocked) {
+          video.pause();
+        }
+      });
+
+      // unlock on click
+      video.addEventListener("click", () => {
+        isMuted = !isMuted;
+        video.muted = isMuted;
+        showMuteIcon(video, isMuted);
+        video.dataset.unlocked = true;
+        video.play();
+      });
+
+      // auto-unlock if user continues watching
+      video.addEventListener("timeupdate", () => {
+        if (video.currentTime >= previewLimit - 0.2 && !video.dataset.unlocked) {
+          video.dataset.unlocked = true;
+        }
+      });
+
       video.pause();
       video.muted = true;
       observer.observe(video);
