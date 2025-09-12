@@ -130,6 +130,33 @@
       display: block;
       opacity: 1 !important;
     }
+
+    .bottom-buttons {
+      position: fixed;
+      bottom: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 1rem;
+      z-index: 50;
+    }
+
+    .feed-btn {
+      background: #2563eb;
+      /* Tailwind blue-600 */
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 9999px;
+      /* pill shape */
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .feed-btn:hover {
+      background: #1d4ed8;
+      /* Tailwind blue-700 */
+    }
   </style>
 </head>
 
@@ -169,13 +196,15 @@
 
       <!-- 📍 Top Left Info -->
       <div class="top-left-info">
-        <div><span class="material-icons text-sm">location_on</span> {{ video.city }}</div>
-        <div><span class="material-icons text-sm transform scale-y-[-1]">trending_flat</span> {{ video.area }}</div>
+        <div class="flex items-center space-x-2">
+          <span class="material-icons text-4xl text-red-600">location_on</span>
+          <span class="text-2xl font-semibold text-white">{{ video.area }}</span>
+        </div><!-- <div><span class="material-icons text-sm transform scale-y-[-1]">trending_flat</span> {{ video.area }}</div>
         <div><span class="material-icons text-sm transform scale-y-[-1]">trending_flat</span> ₹{{ video.price}}</div>
         <div><span class="material-icons text-sm transform scale-y-[-1]">trending_flat</span> {{ video.property_type }}
         </div>
         <div><span class="material-icons text-sm transform scale-y-[-1]">trending_flat</span> {{ video.properties }}
-        </div>
+        </div> -->
       </div>
 
       <!-- 📦 Bottom Info -->
@@ -247,7 +276,7 @@
     function showMuteIcon(video, muted) {
       const icon = video.parentElement.querySelector(".mute-status-icon");
       if (!icon) return;
-      icon.innerHTML = `<span class="material-icons">${muted ? 'volume_off' : 'volume_up'}</span>`;
+      icon.innerHTML = <span class="material-icons">${muted ? 'volume_off' : 'volume_up'}</span>;
       icon.classList.add("show");
 
       setTimeout(() => {
@@ -314,6 +343,12 @@
       observer.observe(video);
     });
   </script>
+  <div class="bottom-buttons">
+    <a href="{% url 'user-filter-by-button' 'Buy' %}" class="feed-btn">Buy</a>
+    <a href="{% url 'user-filter-by-button' 'Rent' %}" class="feed-btn">Rent</a>
+    <a href="{% url 'filter' %}" class="feed-btn">Filter</a>
+  </div>
+
 </body>
 
 </html>
