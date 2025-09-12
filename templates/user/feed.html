@@ -60,6 +60,7 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
+      transform: translateY(-40px);
       background-color: #000;
       z-index: 0;
       cursor: pointer;
@@ -82,11 +83,9 @@
       z-index: 2;
       width: 100%;
       padding: 1rem;
-      padding-bottom: calc(8rem + env(safe-area-inset-bottom));
-      /* ⬅ more padding, adaptive */
+      padding-bottom: calc(6rem + env(safe-area-inset-bottom));
       background: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent);
     }
-
 
     .actions-sidebar {
       position: absolute;
@@ -200,13 +199,21 @@
       <div class="top-left-info">
         <div class="flex items-center space-x-2">
           <span class="material-icons text-4xl text-red-600">location_on</span>
-          <span class="text-2xl font-semibold text-white">{{ video.area }}</span>
-        </div><!-- <div><span class="material-icons text-sm transform scale-y-[-1]">trending_flat</span> {{ video.area }}</div>
-        <div><span class="material-icons text-sm transform scale-y-[-1]">trending_flat</span> ₹{{ video.price}}</div>
-        <div><span class="material-icons text-sm transform scale-y-[-1]">trending_flat</span> {{ video.property_type }}
+          <span class="text-lg font-semibold text-white">{{ video.area }}</span>
         </div>
-        <div><span class="material-icons text-sm transform scale-y-[-1]">trending_flat</span> {{ video.properties }}
-        </div> -->
+        <!-- <div><span class="material-icons text-sm transform scale-y-[-1]">trending_flat</span> {{ video.area }}</div>
+        <div><span class="material-icons text-sm transform scale-y-[-1]">trending_flat</span> ₹{{ video.price}}</div> -->
+        <div class="flex items-center space-x-2">
+          <!-- Inline SVG for house -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-6 h-6">
+            <path fill="#ff6e6e" d="M256 64L64 224h48v224h112V320h64v128h112V224h48z" />
+            <path fill="#ffcc66" d="M112 448V224L256 96l144 128v224H304V320h-96v128z" />
+          </svg>
+
+          <span class="text-lg font-medium text-white">{{ video.property_type }}</span>
+        </div>
+        <!-- <div><span class="material-icons text-sm transform scale-y-[-1]">trending_flat</span> {{ video.properties }} -->
+        <!-- </div> -->
       </div>
 
       <!-- 📦 Bottom Info -->
@@ -278,7 +285,7 @@
     function showMuteIcon(video, muted) {
       const icon = video.parentElement.querySelector(".mute-status-icon");
       if (!icon) return;
-      icon.innerHTML = <span class="material-icons">${muted ? 'volume_off' : 'volume_up'}</span>;
+      icon.innerHTML = `<span class="material-icons">${muted ? 'volume_off' : 'volume_up'}</span>`;
       icon.classList.add("show");
 
       setTimeout(() => {
@@ -286,7 +293,14 @@
       }, 1000);
     }
 
-    // IntersectionObserver: plays only active video
+    videos.forEach(video => {
+      video.addEventListener("click", () => {
+        isMuted = !isMuted;
+        video.muted = isMuted;
+        showMuteIcon(video, isMuted);
+      });
+    });
+
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         const video = entry.target;
@@ -297,7 +311,6 @@
               v.pause();
               v.currentTime = 0;
               v.muted = true;
-              v.dataset.unlocked = ""; // reset preview lock
             }
           });
 
@@ -311,35 +324,11 @@
           video.pause();
         }
       });
-    }, { threshold: 0.9 });
+    }, {
+      threshold: 0.9
+    });
 
-    // Preview + unlock logic
     videos.forEach(video => {
-      const previewLimit = 5; // seconds preview
-
-      // stop at preview limit if not unlocked
-      video.addEventListener("timeupdate", () => {
-        if (video.currentTime >= previewLimit && !video.dataset.unlocked) {
-          video.pause();
-        }
-      });
-
-      // unlock on click
-      video.addEventListener("click", () => {
-        isMuted = !isMuted;
-        video.muted = isMuted;
-        showMuteIcon(video, isMuted);
-        video.dataset.unlocked = true;
-        video.play();
-      });
-
-      // auto-unlock if user continues watching
-      video.addEventListener("timeupdate", () => {
-        if (video.currentTime >= previewLimit - 0.2 && !video.dataset.unlocked) {
-          video.dataset.unlocked = true;
-        }
-      });
-
       video.pause();
       video.muted = true;
       observer.observe(video);
