@@ -205,8 +205,8 @@
       <!-- 📍 Top Left Info -->
       <div class="top-left-info">
         <div class="flex items-center space-x-2">
-          <span class="material-icons text-4xl text-red-600">location_on</span>
-          <span class="text-lg font-semibold text-white">{{ video.area }}</span>
+          <span class="material-icons text-lg text-red-600">location_on</span>
+          <span class="text-lg font-medium text-white">{{ video.area }}</span>
         </div>
         <!-- <div><span class="material-icons text-sm transform scale-y-[-1]">trending_flat</span> {{ video.area }}</div>
         <div><span class="material-icons text-sm transform scale-y-[-1]">trending_flat</span> ₹{{ video.price}}</div> -->
@@ -217,7 +217,7 @@
             <path fill="#ffcc66" d="M112 448V224L256 96l144 128v224H304V320h-96v128z" />
           </svg>
 
-          <span class="text-lg font-medium text-white">{{ video.property_type }}</span>
+          <span class="text-lg font-medium text-white">{{ video.properties }}</span>
         </div>
         <!-- <div><span class="material-icons text-sm transform scale-y-[-1]">trending_flat</span> {{ video.properties }} -->
         <!-- </div> -->
@@ -341,11 +341,67 @@
       observer.observe(video);
     });
   </script>
-  <div class="bottom-buttons">
-    <a href="{% url 'user-filter-by-button' 'Buy' %}" class="feed-btn">Buy</a>
-    <a href="{% url 'user-filter-by-button' 'Rent' %}" class="feed-btn">Rent</a>
-    <a href="{% url 'filter' %}" class="feed-btn">Filter</a>
+  <div class="fixed bottom-6 left-1/2 transform -translate-x-1/2 w-[90%] max-w-md z-50">
+    <div class="flex gap-3">
+      <!-- Buy Button -->
+      <a href="{% url 'user-filter-by-button' 'Buy' %}" class="flex-1 text-center py-3 rounded-2xl font-semibold transition
+       {% if request.GET.property_type == 'Buy' %}
+         text-white bg-gradient-to-r from-blue-900 to-blue-700 shadow-lg
+       {% else %}
+         text-gray-700 bg-gray-200 hover:bg-gray-300
+       {% endif %}">
+        Buy
+      </a>
+
+      <!-- Rent Button -->
+      <a href="{% url 'user-filter-by-button' 'Rent' %}" class="flex-1 text-center py-3 rounded-2xl font-semibold transition
+       {% if request.GET.property_type == 'Rent' %}
+         text-white bg-gradient-to-r from-blue-900 to-blue-700 shadow-lg
+       {% else %}
+         text-gray-700 bg-gray-200 hover:bg-gray-300
+       {% endif %}">
+        Rent
+      </a>
+
+      <!-- Filter Button -->
+      <a href="{% url 'filter' %}"
+        class="flex-1 text-center py-3 rounded-2xl font-semibold text-white bg-gradient-to-r from-blue-900 to-blue-700 shadow-lg hover:from-blue-800 hover:to-blue-600 transition">
+        Filter
+      </a>
+    </div>
   </div>
+
+  <script>
+    const btnBuy = document.getElementById('btn-buy');
+    const btnRent = document.getElementById('btn-rent');
+
+    function setActive(button) {
+      if (button === 'buy') {
+        btnBuy.classList.add('bg-gradient-to-r', 'from-blue-900', 'to-blue-700', 'text-white');
+        btnBuy.classList.remove('bg-gray-200', 'text-gray-700');
+
+        btnRent.classList.remove('bg-gradient-to-r', 'from-blue-900', 'to-blue-700', 'text-white');
+        btnRent.classList.add('bg-gray-200', 'text-gray-700');
+      } else if (button === 'rent') {
+        btnRent.classList.add('bg-gradient-to-r', 'from-blue-900', 'to-blue-700', 'text-white');
+        btnRent.classList.remove('bg-gray-200', 'text-gray-700');
+
+        btnBuy.classList.remove('bg-gradient-to-r', 'from-blue-900', 'to-blue-700', 'text-white');
+        btnBuy.classList.add('bg-gray-200', 'text-gray-700');
+      }
+    }
+
+    btnBuy.addEventListener('click', () => {
+      setActive('buy');
+      window.location.href = "{% url 'user-filter-by-button' 'Buy' %}";
+    });
+
+    btnRent.addEventListener('click', () => {
+      setActive('rent');
+      window.location.href = "{% url 'user-filter-by-button' 'Rent' %}";
+    });
+  </script>
+
 
 </body>
 
