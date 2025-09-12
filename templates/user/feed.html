@@ -82,9 +82,11 @@
       z-index: 2;
       width: 100%;
       padding: 1rem;
-      padding-bottom: 5rem;
+      padding-bottom: calc(8rem + env(safe-area-inset-bottom));
+      /* ⬅ more padding, adaptive */
       background: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent);
     }
+
 
     .actions-sidebar {
       position: absolute;
