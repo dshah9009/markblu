@@ -24,7 +24,9 @@ def user_filter_page(request):
 
 
         query = f"?city={city}&area={area}&property_type={property_type}&properties={properties}&budget={budget}"
-        return redirect('/feed/' + query)
+        # return redirect('/feed/' + query) 
+        return redirect('/' + query) 
+
 
     # Get distinct values from uploaded videos
     cities = PropertyVideo.objects.values_list('city', flat=True).distinct()
@@ -218,3 +220,16 @@ def mobile_login(request):
         return redirect(next_url)
 
     return render(request, "user/login.html")
+
+def user_filter_by_button(request, filter_type):
+    """
+    Handles quick filter buttons (Buy / Rent).
+    Redirects to feed page with property_type applied.
+    """
+    if filter_type not in ["Buy", "Rent"]:
+        return redirect("feed")  # fallback if wrong input
+
+    # Redirect with property_type in query params
+    return redirect(f"{reverse('feed')}?property_type={filter_type}")
+
+
