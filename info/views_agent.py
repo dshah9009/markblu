@@ -127,59 +127,45 @@ def upload_property(request):
             video_obj.agent = agent_profile
             video_obj.save()
 
-            # -------- Paths --------
-            input_path = video_obj.video.path  # raw upload path
+            # Paths
+            input_path = video_obj.video.path
             raw_folder = os.path.join(settings.MEDIA_ROOT, "raw_videos")
             processed_folder = os.path.join(settings.MEDIA_ROOT, "property_videos")
-
             os.makedirs(raw_folder, exist_ok=True)
             os.makedirs(processed_folder, exist_ok=True)
 
-            # Move raw file into raw_videos/
+            # Safe names
             base_name, ext = os.path.splitext(os.path.basename(input_path))
-            safe_name = slugify(base_name)  # e.g. "Luxury Flat" → "luxury-flat"
+            safe_name = slugify(base_name)
             raw_filename = f"{safe_name}_{video_obj.id}{ext}"
             new_raw_path = os.path.join(raw_folder, raw_filename)
-            os.rename(input_path, new_raw_path)  # move file
+            os.rename(input_path, new_raw_path)
 
-            # Output processed file path
             processed_filename = f"{safe_name}_{video_obj.id}.mp4"
             processed_path = os.path.join(processed_folder, processed_filename)
 
-            # -------- Process with FFmpeg --------
-            # FFMPEG_BIN = r"C:\ffmpeg-2025-03-13-git-958c46800e-essentials_build\bin\ffmpeg.exe"
-
-            subprocess.run([
+            # Run ffmpeg in background
+            subprocess.Popen([
                 "ffmpeg", "-y", "-i", new_raw_path,
-                "-vf", "scale=1280:-2",           # 👈 downscale for lower RAM/CPU
+                "-vf", "scale=1280:-2",
                 "-c:v", "libx264", "-preset", "veryfast", "-crf", "28",
                 "-c:a", "aac",
                 "-movflags", "+faststart",
-                "-threads", "1",                  # 👈 limit CPU usage
+                "-threads", "1",
                 processed_path
-            ], check=True)
+            ])
 
-            # subprocess.run([
-            #     "ffmpeg", "-y", "-i", new_raw_path,
-            #     "-vcodec", "libx264", "-crf", "28", "-preset", "fast",
-            #     "-acodec", "aac", "-strict", "experimental",
-            #     "-movflags", "+faststart",
-            #     processed_path
-            # ], check=True)
-
-            # Update DB → processed video only
+            # Set DB to "processing"
             video_obj.video.name = f"property_videos/{processed_filename}"
+            video_obj.processing = True  # 👈 Add this field in model
             video_obj.save()
 
-            # (Optional) Delete raw upload to save space
-            if os.path.exists(new_raw_path):
-                os.remove(new_raw_path)
-
+            messages.info(request, "Video uploaded and is being processed.")
             return redirect('agent-dashboard')
     else:
         form = PropertyVideoForm()
 
-    return render(request, 'agent/upload_property.html', {'form':form})
+    return render(request, 'agent/upload_property.html', {'form': form})
 
 @login_required
 def edit_video(request, video_id):
