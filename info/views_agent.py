@@ -151,11 +151,21 @@ def upload_property(request):
 
             subprocess.run([
                 "ffmpeg", "-y", "-i", new_raw_path,
-                "-vcodec", "libx264", "-crf", "28", "-preset", "fast",
-                "-acodec", "aac", "-strict", "experimental",
+                "-vf", "scale=1280:-2",           # 👈 downscale for lower RAM/CPU
+                "-c:v", "libx264", "-preset", "veryfast", "-crf", "28",
+                "-c:a", "aac",
                 "-movflags", "+faststart",
+                "-threads", "1",                  # 👈 limit CPU usage
                 processed_path
             ], check=True)
+
+            # subprocess.run([
+            #     "ffmpeg", "-y", "-i", new_raw_path,
+            #     "-vcodec", "libx264", "-crf", "28", "-preset", "fast",
+            #     "-acodec", "aac", "-strict", "experimental",
+            #     "-movflags", "+faststart",
+            #     processed_path
+            # ], check=True)
 
             # Update DB → processed video only
             video_obj.video.name = f"property_videos/{processed_filename}"
