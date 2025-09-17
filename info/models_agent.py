@@ -75,6 +75,8 @@ class PropertyVideo(models.Model):
     payment_condition = models.CharField(max_length=150, blank=True, null=True)
     video = models.FileField(upload_to='property_videos/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    processing = models.BooleanField(default=False)
+
 
 
     def __str__(self):
