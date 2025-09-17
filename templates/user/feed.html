@@ -92,7 +92,7 @@
 
     @media (max-width: 768px) {
       .reel-content {
-        padding-bottom: calc(8rem + env(safe-area-inset-bottom));
+        padding-bottom: calc(10rem + env(safe-area-inset-bottom));
       }
     }
 
@@ -257,6 +257,27 @@
       <!-- 🔘 Sidebar Actions -->
       <div class="actions-sidebar">
         <!-- your sidebar buttons here -->
+         <a class="action-item" href="{% if user.is_authenticated %}
+    {% url 'log-call' video.id %}
+  {% else %}
+    {% url 'user-login' %}?next={{ request.get_full_path|urlencode }}
+  {% endif %}">
+          <span class="material-icons">call</span> Call Broker
+        </a>
+        <a class="action-item" href="{% if user.is_authenticated %}
+    {% url 'log-whatsapp' video.id %}
+  {% else %}
+    {% url 'user-login' %}?next={{ request.get_full_path|urlencode }}
+  {% endif %}">
+          <i class="fab fa-whatsapp fa-3x"></i> WhatsApp
+        </a>
+        <div class="action-item"><span class="material-icons">bookmark_border</span> Save</div>
+        <a class="action-item"
+          href="https://www.google.com/maps/search/?api=1&query={{ video.area|urlencode }},{{ video.city|urlencode }}"
+          target="_blank" rel="noopener noreferrer">
+          <span class="material-icons">location_on</span> Location
+        </a>
+      </div>
       </div>
     </div>
     {% endif %}
