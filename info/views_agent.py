@@ -10,6 +10,12 @@ from django.http import HttpResponseForbidden
 from django.contrib.auth import logout
 from django.db import transaction
 import logging
+import os
+import subprocess
+from django.conf import settings
+from django.utils.text import slugify
+
+
 logger = logging.getLogger('info')
 
 @transaction.atomic
@@ -94,22 +100,76 @@ def agent_dashboard(request):
 
 
 
+# @login_required
+# @transaction.atomic
+# def upload_property(request):
+#     agent_profile = AgentProfile.objects.get(user=request.user)
+#     if request.method == 'POST':
+#         form = PropertyVideoForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             video = form.save(commit=False)
+#             video.agent = agent_profile
+#             video.save()
+#             return redirect('agent-dashboard')
+#     else:
+#         form = PropertyVideoForm()
+
+#     return render(request, 'agent/upload_property.html', {'form': form})
 @login_required
 @transaction.atomic
 def upload_property(request):
     agent_profile = AgentProfile.objects.get(user=request.user)
+
     if request.method == 'POST':
         form = PropertyVideoForm(request.POST, request.FILES)
         if form.is_valid():
-            video = form.save(commit=False)
-            video.agent = agent_profile
-            video.save()
+            video_obj = form.save(commit=False)
+            video_obj.agent = agent_profile
+            video_obj.save()
+
+            # -------- Paths --------
+            input_path = video_obj.video.path  # raw upload path
+            raw_folder = os.path.join(settings.MEDIA_ROOT, "raw_videos")
+            processed_folder = os.path.join(settings.MEDIA_ROOT, "property_videos")
+
+            os.makedirs(raw_folder, exist_ok=True)
+            os.makedirs(processed_folder, exist_ok=True)
+
+            # Move raw file into raw_videos/
+            base_name, ext = os.path.splitext(os.path.basename(input_path))
+            safe_name = slugify(base_name)  # e.g. "Luxury Flat" → "luxury-flat"
+            raw_filename = f"{safe_name}_{video_obj.id}{ext}"
+            new_raw_path = os.path.join(raw_folder, raw_filename)
+            os.rename(input_path, new_raw_path)  # move file
+
+            # Output processed file path
+            processed_filename = f"{safe_name}_{video_obj.id}.mp4"
+            processed_path = os.path.join(processed_folder, processed_filename)
+
+            # -------- Process with FFmpeg --------
+            # FFMPEG_BIN = r"C:\ffmpeg-2025-03-13-git-958c46800e-essentials_build\bin\ffmpeg.exe"
+
+            subprocess.run([
+                "ffmpeg", "-y", "-i", new_raw_path,
+                "-vcodec", "libx264", "-crf", "28", "-preset", "fast",
+                "-acodec", "aac", "-strict", "experimental",
+                "-movflags", "+faststart",
+                processed_path
+            ], check=True)
+
+            # Update DB → processed video only
+            video_obj.video.name = f"property_videos/{processed_filename}"
+            video_obj.save()
+
+            # (Optional) Delete raw upload to save space
+            if os.path.exists(new_raw_path):
+                os.remove(new_raw_path)
+
             return redirect('agent-dashboard')
     else:
         form = PropertyVideoForm()
 
-    return render(request, 'agent/upload_property.html', {'form': form})
-
+    return render(request, 'agent/upload_property.html', {'form':form})
 
 @login_required
 def edit_video(request, video_id):
