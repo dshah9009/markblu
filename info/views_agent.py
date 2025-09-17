@@ -14,6 +14,7 @@ import os
 import subprocess
 from django.conf import settings
 from django.utils.text import slugify
+import threading
 
 
 logger = logging.getLogger('info')
@@ -115,6 +116,34 @@ def agent_dashboard(request):
 #         form = PropertyVideoForm()
 
 #     return render(request, 'agent/upload_property.html', {'form': form})
+def run_ffmpeg_async(raw_path, processed_path, video_obj):
+    """Run FFmpeg in the background and update DB when finished."""
+    try:
+        subprocess.run([
+            "ffmpeg", "-y", "-i", raw_path,
+            "-vf", "scale=1280:-2",
+            "-c:v", "libx264", "-preset", "veryfast", "-crf", "28",
+            "-c:a", "aac",
+            "-movflags", "+faststart",
+            "-threads", "1",
+            processed_path
+        ], check=True)
+
+        # Update DB → mark as ready
+        video_obj.video.name = f"property_videos/{os.path.basename(processed_path)}"
+        video_obj.processing = False
+        video_obj.save()
+
+        # Remove raw file to save space
+        if os.path.exists(raw_path):
+            os.remove(raw_path)
+
+    except Exception as e:
+        logger.error(f"FFmpeg failed: {e}")
+        video_obj.processing = False  # avoid infinite "processing"
+        video_obj.save()
+
+
 @login_required
 @transaction.atomic
 def upload_property(request):
@@ -125,6 +154,7 @@ def upload_property(request):
         if form.is_valid():
             video_obj = form.save(commit=False)
             video_obj.agent = agent_profile
+            video_obj.processing = True   # 👈 Mark as processing immediately
             video_obj.save()
 
             # Paths
@@ -134,7 +164,6 @@ def upload_property(request):
             os.makedirs(raw_folder, exist_ok=True)
             os.makedirs(processed_folder, exist_ok=True)
 
-            # Safe names
             base_name, ext = os.path.splitext(os.path.basename(input_path))
             safe_name = slugify(base_name)
             raw_filename = f"{safe_name}_{video_obj.id}{ext}"
@@ -144,23 +173,13 @@ def upload_property(request):
             processed_filename = f"{safe_name}_{video_obj.id}.mp4"
             processed_path = os.path.join(processed_folder, processed_filename)
 
-            # Run ffmpeg in background
-            subprocess.Popen([
-                "ffmpeg", "-y", "-i", new_raw_path,
-                "-vf", "scale=1280:-2",
-                "-c:v", "libx264", "-preset", "veryfast", "-crf", "28",
-                "-c:a", "aac",
-                "-movflags", "+faststart",
-                "-threads", "1",
-                processed_path
-            ])
+            # Run FFmpeg in background thread
+            threading.Thread(
+                target=run_ffmpeg_async,
+                args=(new_raw_path, processed_path, video_obj),
+                daemon=True
+            ).start()
 
-            # Set DB to "processing"
-            video_obj.video.name = f"property_videos/{processed_filename}"
-            video_obj.processing = True  # 👈 Add this field in model
-            video_obj.save()
-
-            messages.info(request, "Video uploaded and is being processed.")
             return redirect('agent-dashboard')
     else:
         form = PropertyVideoForm()

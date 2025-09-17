@@ -15,12 +15,12 @@
         })(window, document, 'script', 'dataLayer', 'GTM-5ZJBL5FL');</script>
     <!-- End Google Tag Manager -->
     <script type="text/javascript">
-    (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-    })(window, document, "clarity", "script", "sytbfko0ai");
-</script>
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "sytbfko0ai");
+    </script>
     <title>Agent Dashboard - MarkBlu</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -293,6 +293,28 @@
         {% if videos %}
         {% for video in videos %}
         <div class="video-card">
+            {% if video.processing %}
+            <p style="color: orange;">⏳ Processing... Please wait</p>
+            {% else %}
+            <video controls>
+                <source src="{{ video.video.url }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            {% endif %}
+
+            <p><strong>📍 {{ video.city }}, {{ video.area }}</strong></p>
+            <p>Type: {{ video.property_type }}</p>
+            <p>Property: {{ video.properties }}</p>
+            <p>Size: {{ video.property_size_sqft }} sqft | Price: ₹{{ video.price }}</p>
+            <p>Guideline: ₹{{ video.guideline_per_sqft }}/sqft | Token: ₹{{ video.token_amount }}</p>
+            <p>
+                <a href="{% url 'edit_video' video.id %}">✏️ Edit</a>
+                <a href="{% url 'delete_video' video.id %}" class="delete"
+                    onclick="return confirm('Are you sure you want to delete this video?');">🗑️ Delete</a>
+            </p>
+        </div>
+
+        <!-- <div class="video-card">
             <video controls>
                 <source src="{{ video.video.url }}" type="video/mp4">
                 Your browser does not support the video tag.
@@ -307,7 +329,7 @@
                 <a href="{% url 'delete_video' video.id %}" class="delete"
                     onclick="return confirm('Are you sure you want to delete this video?');">🗑️ Delete</a>
             </p>
-        </div>
+        </div> -->
         {% endfor %}
         {% else %}
         <p style="color: gray;">You haven’t uploaded any property yet.</p>
