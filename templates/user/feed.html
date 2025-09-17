@@ -5,7 +5,7 @@
 
 <head>
   <meta charset="utf-8" />
-  
+
   <link rel="icon" href="{% static 'images/markblu-logo.png' %}" type="image/x-icon" />
   <title>MarkBlu</title>
   <!-- Google Tag Manager -->
@@ -193,6 +193,7 @@
 
   <div class="reel-container">
     {% for video in videos %}
+    {% if not video.processing %}
     <div class="reel">
       <!-- 🎥 Video -->
       <video autoplay loop playsinline muted>
@@ -212,19 +213,13 @@
           <span class="material-icons text-lg text-red-600">location_on</span>
           <span class="text-lg font-medium text-white">{{ video.area }}</span>
         </div>
-        <!-- <div><span class="material-icons text-sm transform scale-y-[-1]">trending_flat</span> {{ video.area }}</div>
-        <div><span class="material-icons text-sm transform scale-y-[-1]">trending_flat</span> ₹{{ video.price}}</div> -->
         <div class="flex items-center space-x-2">
-          <!-- Inline SVG for house -->
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-6 h-6">
             <path fill="#ff6e6e" d="M256 64L64 224h48v224h112V320h64v128h112V224h48z" />
             <path fill="#ffcc66" d="M112 448V224L256 96l144 128v224H304V320h-96v128z" />
           </svg>
-
           <span class="text-lg font-medium text-white">{{ video.properties }}</span>
         </div>
-        <!-- <div><span class="material-icons text-sm transform scale-y-[-1]">trending_flat</span> {{ video.properties }} -->
-        <!-- </div> -->
       </div>
 
       <!-- 📦 Bottom Info -->
@@ -237,7 +232,6 @@
             Token: ₹{{ video.token_amount }}
           </span>
         </div>
-
         <div>
           <a href="{% url 'details' video.id %}?from={{ request.get_full_path|urlencode }}"
             class="text-blue-400 font-semibold underline hover:text-blue-300 transition">
@@ -247,12 +241,10 @@
             {{ video.agent.user.first_name }} {{ video.agent.user.last_name }}
           </span>
         </div>
-
         <div class="space-y-1">
           {% if video.agent.company_name %}
           <p><strong>Company:</strong> {{ video.agent.company_name }}</p>
           {% endif %}
-
           {% if video.agent.project_name %}
           <p><strong>Project:</strong> {{ video.agent.project_name }}</p>
           {% endif %}
@@ -264,30 +256,13 @@
 
       <!-- 🔘 Sidebar Actions -->
       <div class="actions-sidebar">
-        <a class="action-item" href="{% if user.is_authenticated %}
-    {% url 'log-call' video.id %}
-  {% else %}
-    {% url 'user-login' %}?next={{ request.get_full_path|urlencode }}
-  {% endif %}">
-          <span class="material-icons">call</span> Call Broker
-        </a>
-        <a class="action-item" href="{% if user.is_authenticated %}
-    {% url 'log-whatsapp' video.id %}
-  {% else %}
-    {% url 'user-login' %}?next={{ request.get_full_path|urlencode }}
-  {% endif %}">
-          <i class="fab fa-whatsapp fa-3x"></i> WhatsApp
-        </a>
-        <div class="action-item"><span class="material-icons">bookmark_border</span> Save</div>
-        <a class="action-item"
-          href="https://www.google.com/maps/search/?api=1&query={{ video.area|urlencode }},{{ video.city|urlencode }}"
-          target="_blank" rel="noopener noreferrer">
-          <span class="material-icons">location_on</span> Location
-        </a>
+        <!-- your sidebar buttons here -->
       </div>
     </div>
+    {% endif %}
     {% endfor %}
   </div>
+
 
   <script>
     let isMuted = true;
