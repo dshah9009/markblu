@@ -134,14 +134,18 @@ def run_ffmpeg_async(raw_path, processed_path, video_obj):
         video_obj.processing = False
         video_obj.save()
 
-        # Remove raw file to save space
-        if os.path.exists(raw_path):
-            os.remove(raw_path)
-
     except Exception as e:
         logger.error(f"FFmpeg failed: {e}")
         video_obj.processing = False  # avoid infinite "processing"
         video_obj.save()
+    finally:
+        # ✅ Always remove raw file to save space
+        if os.path.exists(raw_path):
+            try:
+                os.remove(raw_path)
+                logger.info(f"Deleted raw file: {raw_path}")
+            except Exception as cleanup_err:
+                logger.error(f"Could not remove raw file {raw_path}: {cleanup_err}")
 
 
 @login_required
@@ -185,7 +189,6 @@ def upload_property(request):
         form = PropertyVideoForm()
 
     return render(request, 'agent/upload_property.html', {'form': form})
-
 @login_required
 def edit_video(request, video_id):
     video = get_object_or_404(PropertyVideo, id=video_id, agent__user=request.user)
@@ -193,13 +196,34 @@ def edit_video(request, video_id):
     if request.method == 'POST':
         form = PropertyVideoForm(request.POST, request.FILES, instance=video)
         if form.is_valid():
-            form.save()
+            updated_video = form.save(commit=False)
+
+            # ✅ If user uploaded a new file, mark it as processing again
+            if 'video' in request.FILES:
+                updated_video.processing = True  
+
+            updated_video.save()
             messages.success(request, "Property updated successfully.")
             return redirect('agent-dashboard')
     else:
         form = PropertyVideoForm(instance=video)
 
     return render(request, 'agent/edit_property.html', {'form': form})
+
+# @login_required
+# def edit_video(request, video_id):
+#     video = get_object_or_404(PropertyVideo, id=video_id, agent__user=request.user)
+
+#     if request.method == 'POST':
+#         form = PropertyVideoForm(request.POST, request.FILES, instance=video)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, "Property updated successfully.")
+#             return redirect('agent-dashboard')
+#     else:
+#         form = PropertyVideoForm(instance=video)
+
+#     return render(request, 'agent/edit_property.html', {'form': form})
 
 
 @login_required
