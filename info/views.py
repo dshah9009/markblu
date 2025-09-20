@@ -49,7 +49,6 @@ def user_filter_page(request):
         'budget_ranges': budget_ranges
     })
  
-
 def property_filter_view(request):
     # Get distinct values for dropdowns
     cities = PropertyVideo.objects.values_list('city', flat=True).distinct()
@@ -96,7 +95,7 @@ def property_filter_view(request):
     no_results = False
     if not videos.exists() and property_type:
         no_results = True
-        videos = PropertyVideo.objects.filter(property_type=property_type).order_by('-uploaded_at')
+        # videos = PropertyVideo.objects.filter(property_type=property_type).order_by('-uploaded_at')
     return render(request, "user/feed.html", {
         "videos": videos,
         "no_results": no_results,
