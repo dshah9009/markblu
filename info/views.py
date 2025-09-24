@@ -1,5 +1,5 @@
 from django.db.models import Value
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from .models_agent import PropertyVideo, ContactLog
 from django.template import RequestContext
@@ -9,24 +9,18 @@ from .models import UserProfile
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-
+from django.core.paginator import Paginator
+from django.template.loader import render_to_string
 
 def user_filter_page(request):
     if request.method == "POST":
         city = request.POST.get("city", "")
         area = request.POST.get("area", "")
-        # price_min = request.POST.get("price_min", "")
-        # price_max = request.POST.get("price_max", "")
         property_type = request.POST.get("property_type", "")
         properties = request.POST.get("properties", "")
         budget = request.POST.get("budget", "")
-
-
-
         query = f"?city={city}&area={area}&property_type={property_type}&properties={properties}&budget={budget}"
-        # return redirect('/feed/' + query) 
-        return redirect('/' + query) 
-
+        return redirect('/' + query)
 
     # Get distinct values from uploaded videos
     cities = PropertyVideo.objects.values_list('city', flat=True).distinct()
@@ -40,23 +34,21 @@ def user_filter_page(request):
         ("10000000-", "Above ₹1 Cr"),
     ]
 
-
-
     return render(request, 'user/filter.html', {
         'cities': cities,
         'areas': areas,
-        'properties_choices' : properties_choices,
+        'properties_choices': properties_choices,
         'budget_ranges': budget_ranges
     })
- 
+
 def property_filter_view(request):
     # Get distinct values for dropdowns
     cities = PropertyVideo.objects.values_list('city', flat=True).distinct()
     areas = PropertyVideo.objects.values_list('area', flat=True).distinct()
     property_types = PropertyVideo.objects.values_list('property_type', flat=True).distinct()
-
+    
     videos = PropertyVideo.objects.all()
-
+    
     if request.method == 'GET':
         city = request.GET.get('city')
         area = request.GET.get('area')
@@ -64,42 +56,58 @@ def property_filter_view(request):
         property_type = request.GET.get('property_type')
         properties = request.GET.get('properties')
         budget = request.GET.get('budget')
-
-    filters = {}
-    if city:
-        filters["city"] = city
-    if area:
-        filters["area"] = area
-    if price:
-        filters["price"] = price
-    if property_type:
-        filters["property_type"] = property_type
-    if properties:
-        filters["properties"] = properties
-
-    if budget:
-        try:
-            # min_price, max_price = budget.split("-")
-            # if min_price:
-            #     filters["price__gte"] = int(min_price)
-            # if max_price:
-            #     filters["price__lte"] = int(max_price)
-            budget_value = int(budget) * 10000  # Convert slider value to ₹
-            if budget_value > 0:
-                filters["price__lte"] = budget_value
-        except:
-            pass
-
-    videos = PropertyVideo.objects.filter(**filters).order_by('-uploaded_at')
-
-    no_results = False
-    if not videos.exists() and property_type:
-        no_results = True
-        # videos = PropertyVideo.objects.filter(property_type=property_type).order_by('-uploaded_at')
-    return render(request, "user/feed.html", {
-        "videos": videos,
-        "no_results": no_results,
-    })
+        page = request.GET.get('page', 1)
+        
+        filters = {}
+        if city:
+            filters["city"] = city
+        if area:
+            filters["area"] = area
+        if price:
+            filters["price"] = price
+        if property_type:
+            filters["property_type"] = property_type
+        if properties:
+            filters["properties"] = properties
+        if budget:
+            try:
+                budget_value = int(budget) * 10000  # Convert slider value to ₹
+                if budget_value > 0:
+                    filters["price__lte"] = budget_value
+            except:
+                pass
+        
+        videos = PropertyVideo.objects.filter(**filters).order_by('-uploaded_at')
+        
+        no_results = False
+        if not videos.exists() and property_type:
+            no_results = True
+        
+        # Pagination - 3 videos per page
+        paginator = Paginator(videos, 3)
+        page_obj = paginator.get_page(page)
+        
+        # Check if this is an AJAX request
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            videos_html = render_to_string('user/video_items.html', {
+                'videos': page_obj,
+                'request': request,
+                'user': request.user
+            })
+            print(page_obj)
+            return JsonResponse({
+                'videos_html': videos_html,
+                'has_more': page_obj.has_next(),
+                'next_page': page_obj.next_page_number() if page_obj.has_next() else None
+            })
+        
+        # Regular page load
+        return render(request, "user/feed.html", {
+            "videos": page_obj,
+            "no_results": no_results,
+            "has_more": page_obj.has_next(),
+            "next_page": page_obj.next_page_number() if page_obj.has_next() else None,
+        })
 
 def user_register(request):
     if request.method == "POST":
@@ -114,19 +122,15 @@ def user_register(request):
 
         user = User.objects.create_user(username=email, email=email, password=password, first_name=first_name, last_name=last_name)
         UserProfile.objects.create(user=user, mobile=mobile)
-
         return redirect("user-login")
 
     return render(request, "user/register.html")
-
 
 def user_login(request):
     if request.method == "POST":
         email = request.POST["email"]
         password = request.POST["password"]
-
         user = authenticate(request, username=email, password=password)
-
         if user is not None:
             login(request, user)
             next_url = request.GET.get("next", "filter")
@@ -154,8 +158,6 @@ def log_call_and_redirect(request, video_id):
     return render(request, 'user/call_redirect.html', {
         'agent_mobile': video.agent.mobile
     })
-
-
 
 @login_required
 def log_whatsapp_and_redirect(request, video_id):
@@ -197,7 +199,6 @@ User = get_user_model()
 def mobile_login(request):
     if request.method == "POST":
         mobile = request.POST.get("mobile")
-
         if not mobile:
             return render(request, "user/mobile_login.html", {
                 "error": "Please enter a mobile number."
@@ -214,7 +215,6 @@ def mobile_login(request):
 
         # log them in
         login(request, user)
-
         next_url = request.GET.get("next", "filter")
         return redirect(next_url)
 
@@ -230,5 +230,3 @@ def user_filter_by_button(request, filter_type):
 
     # Redirect with property_type in query params
     return redirect(f"{reverse('feed')}?property_type={filter_type}")
-
-
