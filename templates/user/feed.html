@@ -2,413 +2,372 @@
 {% load price_filters %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="utf-8" />
-  <!-- Google Tag Manager -->
-  <script>(function (w, d, s, l, i) {
-      w[l] = w[l] || []; w[l].push({
-        'gtm.start':
-          new Date().getTime(), event: 'gtm.js'
-      }); var f = d.getElementsByTagName(s)[0],
-        j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
-          'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+    <meta charset="utf-8" />
+    <!-- Google Tag Manager -->
+    <script>(function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({
+            'gtm.start': new Date().getTime(), event: 'gtm.js'
+        });
+        var f = d.getElementsByTagName(s)[0],
+            j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
+        j.async = true;
+        j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+        f.parentNode.insertBefore(j, f);
     })(window, document, 'script', 'dataLayer', 'GTM-5ZJBL5FL');</script>
-  <!-- End Google Tag Manager -->
-  <script type="text/javascript">
-    (function (c, l, a, r, i, t, y) {
-      c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
-      t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
-      y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
-    })(window, document, "clarity", "script", "sytbfko0ai");
-  </script>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MarkBlu feed</title>
-  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- End Google Tag Manager -->
 
-  <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-      background: #000;
-      color: #fff;
-      margin: 0;
-    }
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "sytbfko0ai");
+    </script>
 
-    .reel-container {
-      height: 100vh;
-      overflow-y: scroll;
-      scroll-snap-type: y mandatory;
-      -webkit-overflow-scrolling: touch;
-    }
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MarkBlu feed</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    .reel {
-      height: 100vh;
-      scroll-snap-align: start;
-      position: relative;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-    }
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #000;
+            color: #fff;
+            margin: 0;
+        }
 
-    .reel video {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      transform: translateY(-70px);
-      background-color: #000;
-      z-index: 0;
-      cursor: pointer;
-    }
+        .reel-container {
+            height: 100vh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
 
-    .top-left-info {
-      position: absolute;
-      top: 1rem;
-      left: 1rem;
-      z-index: 10;
-      font-size: 0.75rem;
-      color: white;
-      line-height: 1.5;
-      max-width: 75%;
-      word-wrap: break-word;
-    }
+        .reel {
+            height: 100vh;
+            scroll-snap-align: start;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
 
-    .reel-content {
-      position: relative;
-      z-index: 2;
-      width: 100%;
-      padding: 1rem;
-      padding-bottom: calc(6rem + env(safe-area-inset-bottom));
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent);
-    }
+        .reel video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transform: translateY(-70px);
+            background-color: #000;
+            z-index: 0;
+            cursor: pointer;
+        }
 
-    @media (max-width: 768px) {
-      .reel-content {
-        padding-bottom: calc(9rem + env(safe-area-inset-bottom));
-      }
-    }
+        .top-left-info {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            z-index: 10;
+            font-size: 0.75rem;
+            color: white;
+            line-height: 1.5;
+            max-width: 75%;
+            word-wrap: break-word;
+        }
 
+        .reel-content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            padding: 1rem;
+            padding-bottom: calc(6rem + env(safe-area-inset-bottom));
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent);
+        }
 
-    .actions-sidebar {
-      position: absolute;
-      right: 1rem;
-      bottom: 6rem;
-      z-index: 10;
-      display: flex;
-      flex-direction: column;
-      gap: 1.2rem;
-      align-items: center;
-      transform: translateY(-40px);
-    }
+        @media (max-width: 768px) {
+            .reel-content {
+                padding-bottom: calc(9rem + env(safe-area-inset-bottom));
+            }
+        }
 
-    .action-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.75rem;
-      text-align: center;
-      color: white;
-      gap: 4px;
-    }
+        .actions-sidebar {
+            position: absolute;
+            right: 1rem;
+            bottom: 6rem;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            align-items: center;
+            transform: translateY(-40px);
+        }
 
-    .action-item .material-icons {
-      font-size: 2rem;
-      margin-bottom: 4px;
-    }
+        .action-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            text-align: center;
+            color: white;
+            gap: 4px;
+        }
 
-    .message {
-      padding: 1rem;
-      text-align: center;
-      background: #1f2937;
-      color: #d1d5db;
-    }
+        .action-item .material-icons {
+            font-size: 2rem;
+            margin-bottom: 4px;
+        }
 
-    .mute-status-icon {
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      display: none;
-    }
+        .message {
+            padding: 1rem;
+            text-align: center;
+            background: #1f2937;
+            color: #d1d5db;
+        }
 
-    .mute-status-icon.show {
-      display: block;
-      opacity: 1 !important;
-    }
+        .mute-status-icon {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: none;
+        }
 
-    .bottom-buttons {
-      position: fixed;
-      bottom: 1rem;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 1rem;
-      z-index: 50;
-    }
+        .mute-status-icon.show {
+            display: block;
+            opacity: 1 !important;
+        }
 
-    .feed-btn {
-      background: #2563eb;
-      /* Tailwind blue-600 */
-      color: white;
-      padding: 0.75rem 1.5rem;
-      border-radius: 9999px;
-      /* pill shape */
-      font-weight: 600;
-      text-decoration: none;
-      transition: background 0.2s;
-    }
+        .bottom-buttons {
+            position: fixed;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 50;
+        }
 
-    .feed-btn:hover {
-      background: #1d4ed8;
-      /* Tailwind blue-700 */
-    }
-  </style>
+        .feed-btn {
+            background: #2563eb;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .feed-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .loading-spinner {
+            display: none;
+            position: fixed;
+            bottom: 50%;
+            left: 50%;
+            transform: translate(-50%, 50%);
+            z-index: 100;
+        }
+
+        .loading-spinner.show {
+            display: block;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 
 <body>
-  <!-- Google Tag Manager (noscript) -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5ZJBL5FL" height="0" width="0"
-      style="display:none;visibility:hidden"></iframe></noscript>
-  <!-- End Google Tag Manager (noscript) -->
-  {% load static %}
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5ZJBL5FL" 
+                     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
 
-  {% if no_results %}
-  <div
-    class="fixed top-4 left-1/2 transform -translate-x-1/2 bg-opacity-60 text-white text-sm px-4 py-2 rounded-md z-50">
-    No exact matches found. Showing similar properties:
-  </div>
-  {% endif %}
-
-  <!-- 🔷 MarkBlu Logo at Top Right -->
-  <div class="absolute top-4 right-4 z-50">
-    <img src="{% static 'images/markblu-logo.png' %}" alt="MarkBlu Logo" class="h-10 w-auto">
-  </div>
-
-  <div class="reel-container">
-    {% for video in videos %}
-    {% if not video.processing %}
-    <div class="reel">
-      <!-- 🎥 Video -->
-      <video autoplay loop playsinline muted>
-        <source src="{{ video.video.url }}" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-
-      <!-- 🔈 Mute/Unmute Status Icon -->
-      <div
-        class="mute-status-icon absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white z-50 text-5xl pointer-events-none">
-        <span class="material-icons">volume_off</span>
-      </div>
-
-      <!-- 📍 Top Left Info -->
-      <div class="top-left-info">
-        <div class="flex items-center space-x-2">
-          <span class="material-icons text-lg text-red-600">location_on</span>
-          <span class="text-lg font-medium text-white">{{ video.area }}</span>
-        </div>
-        <!-- <div><span class="material-icons text-sm transform scale-y-[-1]">trending_flat</span> {{ video.area }}</div>
-        <div><span class="material-icons text-sm transform scale-y-[-1]">trending_flat</span> ₹{{ video.price}}</div> -->
-        <div class="flex items-center space-x-2">
-          <!-- Inline SVG for house -->
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-6 h-6">
-            <path fill="#ff6e6e" d="M256 64L64 224h48v224h112V320h64v128h112V224h48z" />
-            <path fill="#ffcc66" d="M112 448V224L256 96l144 128v224H304V320h-96v128z" />
-          </svg>
-
-          <span class="text-lg font-medium text-white">{{ video.properties }}</span>
-        </div>
-        <!-- <div><span class="material-icons text-sm transform scale-y-[-1]">trending_flat</span> {{ video.properties }} -->
-        <!-- </div> -->
-      </div>
-
-      <!-- 📦 Bottom Info -->
-      <div class="reel-content text-base leading-relaxed space-y-3 mt-4 text-gray-100">
-        <div class="flex flex-wrap items-center gap-2">
-          <span class="bg-green-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
-            RERA: {{ video.rera }}
-          </span>
-          <span class="bg-gray-900 text-white px-3 py-1 rounded-full text-sm font-semibold">
-            Token: ₹{{ video.token_amount }}
-          </span>
-        </div>
-
-        <div>
-          <a href="{% url 'details' video.id %}?from={{ request.get_full_path|urlencode }}"
-            class="text-blue-400 font-semibold underline hover:text-blue-300 transition">
-            Broker Details:
-          </a>
-          <span class="ml-1 font-medium">
-            {{ video.agent.user.first_name }} {{ video.agent.user.last_name }}
-          </span>
-        </div>
-
-        <div class="space-y-1">
-          {% if video.agent.company_name %}
-          <p><strong>Company:</strong> {{ video.agent.company_name }}</p>
-          {% endif %}
-
-          {% if video.agent.project_name %}
-          <p><strong>Project:</strong> {{ video.agent.project_name }}</p>
-          {% endif %}
-          <p><strong>Price:</strong> ₹{{ video.price|format_inr }}</p>
-          <p><strong>guideline:</strong> ₹{{ video.guideline_per_sqft }}/sqft</p>
-          <p><strong>Size:</strong> {{ video.property_size_sqft }} sqft</p>
-        </div>
-      </div>
-
-      <!-- 🔘 Sidebar Actions -->
-      <div class="actions-sidebar">
-        <a class="action-item" href="{% if user.is_authenticated %}
-    {% url 'log-call' video.id %}
-  {% else %}
-    {% url 'user-login' %}?next={{ request.get_full_path|urlencode }}
-  {% endif %}">
-          <span class="material-icons">call</span> Call Broker
-        </a>
-        <a class="action-item" href="{% if user.is_authenticated %}
-    {% url 'log-whatsapp' video.id %}
-  {% else %}
-    {% url 'user-login' %}?next={{ request.get_full_path|urlencode }}
-  {% endif %}">
-          <i class="fab fa-whatsapp fa-3x"></i> WhatsApp
-        </a>
-        <div class="action-item"><span class="material-icons">bookmark_border</span> Save</div>
-        <a class="action-item"
-          href="https://www.google.com/maps/search/?api=1&query={{ video.area|urlencode }},{{ video.city|urlencode }}"
-          target="_blank" rel="noopener noreferrer">
-          <span class="material-icons">location_on</span> Location
-        </a>
-      </div>
+    {% if no_results %}
+    <div class="fixed top-4 left-1/2 transform -translate-x-1/2 bg-opacity-60 text-white text-sm px-4 py-2 rounded-md z-50">
+        No exact matches found. Showing similar properties:
     </div>
     {% endif %}
 
-    {% endfor %}
-  </div>
-
-  <script>
-    let isMuted = true;
-    const videos = document.querySelectorAll("video");
-
-    function showMuteIcon(video, muted) {
-      const icon = video.parentElement.querySelector(".mute-status-icon");
-      if (!icon) return;
-      icon.innerHTML = `<span class="material-icons">${muted ? 'volume_off' : 'volume_up'}</span>`;
-      icon.classList.add("show");
-
-      setTimeout(() => {
-        icon.classList.remove("show");
-      }, 1000);
-    }
-
-    videos.forEach(video => {
-      video.addEventListener("click", () => {
-        isMuted = !isMuted;
-        video.muted = isMuted;
-        showMuteIcon(video, isMuted);
-      });
-    });
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        const video = entry.target;
-
-        if (entry.isIntersecting) {
-          videos.forEach(v => {
-            if (v !== video) {
-              v.pause();
-              v.currentTime = 0;
-              v.muted = true;
-            }
-          });
-
-          video.muted = isMuted;
-          video.play().catch(err => {
-            console.error("Autoplay error:", err);
-          });
-
-          showMuteIcon(video, isMuted);
-        } else {
-          video.pause();
-        }
-      });
-    }, {
-      threshold: 0.9
-    });
-
-    videos.forEach(video => {
-      video.pause();
-      video.muted = true;
-      observer.observe(video);
-    });
-  </script>
-  <div class="fixed bottom-0 left-0 w-full bg-white shadow-lg z-50">
-    <div class="max-w-md mx-auto flex gap-3 p-3">
-
-      <!-- Buy Button -->
-      <a href="{% url 'user-filter-by-button' 'Buy' %}" class="flex-1 text-center py-3 rounded-2xl font-semibold transition
-       {% if request.GET.property_type == 'Buy' %}
-         text-white bg-gradient-to-r from-blue-900 to-blue-700 shadow-lg
-       {% else %}
-         text-gray-700 bg-gray-200 hover:bg-gray-300
-       {% endif %}">
-        Buy
-      </a>
-
-      <!-- Rent Button -->
-      <a href="{% url 'user-filter-by-button' 'Rent' %}" class="flex-1 text-center py-3 rounded-2xl font-semibold transition
-       {% if request.GET.property_type == 'Rent' %}
-         text-white bg-gradient-to-r from-blue-900 to-blue-700 shadow-lg
-       {% else %}
-         text-gray-700 bg-gray-200 hover:bg-gray-300
-       {% endif %}">
-        Rent
-      </a>
-
-      <!-- Filter Button -->
-      <a href="{% url 'filter' %}"
-        class="flex-1 text-center py-3 rounded-2xl font-semibold text-white bg-gradient-to-r from-blue-900 to-blue-700 shadow-lg hover:from-blue-800 hover:to-blue-600 transition">
-        Filter
-      </a>
+    <!-- 🔷 MarkBlu Logo at Top Right -->
+    <div class="absolute top-4 right-4 z-50">
+        <img src="{% static 'images/markblu-logo.png' %}" alt="MarkBlu Logo" class="h-10 w-auto">
     </div>
-  </div>
 
+    <!-- Loading Spinner -->
+    <div class="loading-spinner" id="loadingSpinner">
+        <div class="spinner"></div>
+    </div>
 
-  <script>
-    const btnBuy = document.getElementById('btn-buy');
-    const btnRent = document.getElementById('btn-rent');
+    <div class="reel-container" id="reelContainer">
+        <!-- Initial videos -->
+        {% include 'user/video_items.html' with videos=videos %}
+    </div>
 
-    function setActive(button) {
-      if (button === 'buy') {
-        btnBuy.classList.add('bg-gradient-to-r', 'from-blue-900', 'to-blue-700', 'text-white');
-        btnBuy.classList.remove('bg-gray-200', 'text-gray-700');
+    <div class="fixed bottom-0 left-0 w-full bg-white shadow-lg z-50">
+        <div class="max-w-md mx-auto flex gap-3 p-3">
+            <!-- Buy Button -->
+            <a href="{% url 'user-filter-by-button' 'Buy' %}" 
+               class="flex-1 text-center py-3 rounded-2xl font-semibold transition
+                      {% if request.GET.property_type == 'Buy' %}
+                          text-white bg-gradient-to-r from-blue-900 to-blue-700 shadow-lg
+                      {% else %}
+                          text-gray-700 bg-gray-200 hover:bg-gray-300
+                      {% endif %}">
+                Buy
+            </a>
 
-        btnRent.classList.remove('bg-gradient-to-r', 'from-blue-900', 'to-blue-700', 'text-white');
-        btnRent.classList.add('bg-gray-200', 'text-gray-700');
-      } else if (button === 'rent') {
-        btnRent.classList.add('bg-gradient-to-r', 'from-blue-900', 'to-blue-700', 'text-white');
-        btnRent.classList.remove('bg-gray-200', 'text-gray-700');
+            <!-- Rent Button -->
+            <a href="{% url 'user-filter-by-button' 'Rent' %}" 
+               class="flex-1 text-center py-3 rounded-2xl font-semibold transition
+                      {% if request.GET.property_type == 'Rent' %}
+                          text-white bg-gradient-to-r from-blue-900 to-blue-700 shadow-lg
+                      {% else %}
+                          text-gray-700 bg-gray-200 hover:bg-gray-300
+                      {% endif %}">
+                Rent
+            </a>
 
-        btnBuy.classList.remove('bg-gradient-to-r', 'from-blue-900', 'to-blue-700', 'text-white');
-        btnBuy.classList.add('bg-gray-200', 'text-gray-700');
-      }
-    }
+            <!-- Filter Button -->
+            <a href="{% url 'filter' %}" 
+               class="flex-1 text-center py-3 rounded-2xl font-semibold text-white bg-gradient-to-r from-blue-900 to-blue-700 shadow-lg hover:from-blue-800 hover:to-blue-600 transition">
+                Filter
+            </a>
+        </div>
+    </div>
 
-    btnBuy.addEventListener('click', () => {
-      setActive('buy');
-      window.location.href = "{% url 'user-filter-by-button' 'Buy' %}";
-    });
+    <script>
+        let isMuted = true;
+        let isLoading = false;
+        let hasMore = {{ has_more|yesno:"true,false" }};
+        let nextPage = {{ next_page|default:"null" }};
+        const currentUrl = new URL(window.location.href);
 
-    btnRent.addEventListener('click', () => {
-      setActive('rent');
-      window.location.href = "{% url 'user-filter-by-button' 'Rent' %}";
-    });
-  </script>
+        function showMuteIcon(video, muted) {
+            const icon = video.parentElement.querySelector(".mute-status-icon");
+            if (!icon) return;
+            icon.innerHTML = `<span class="material-icons">${muted ? 'volume_off' : 'volume_up'}</span>`;
+            icon.classList.add("show");
+            setTimeout(() => {
+                icon.classList.remove("show");
+            }, 1000);
+        }
 
+        function initializeVideos() {
+            const videos = document.querySelectorAll("video");
+            
+            videos.forEach(video => {
+                // Add click event for mute/unmute
+                video.addEventListener("click", () => {
+                    isMuted = !isMuted;
+                    video.muted = isMuted;
+                    showMuteIcon(video, isMuted);
+                });
 
+                // Observe video for intersection
+                observer.observe(video);
+            });
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const video = entry.target;
+                if (entry.isIntersecting) {
+                    // Pause all other videos
+                    document.querySelectorAll("video").forEach(v => {
+                        if (v !== video) {
+                            v.pause();
+                            v.currentTime = 0;
+                            v.muted = true;
+                        }
+                    });
+
+                    video.muted = isMuted;
+                    video.play().catch(err => {
+                        console.error("Autoplay error:", err);
+                    });
+                    showMuteIcon(video, isMuted);
+                } else {
+                    video.pause();
+                }
+            });
+        }, { threshold: 0.9 });
+
+        function loadMoreVideos() {
+            if (isLoading || !hasMore) return;
+
+            isLoading = true;
+            document.getElementById('loadingSpinner').classList.add('show');
+
+            // Add page parameter to current URL
+            currentUrl.searchParams.set('page', nextPage);
+
+            fetch(currentUrl.toString(), {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Append new videos
+                const container = document.getElementById('reelContainer');
+                container.insertAdjacentHTML('beforeend', data.videos_html);
+
+                // Initialize new videos
+                initializeVideos();
+
+                // Update pagination info
+                hasMore = data.has_more;
+                nextPage = data.next_page;
+
+                isLoading = false;
+                document.getElementById('loadingSpinner').classList.remove('show');
+            })
+            .catch(error => {
+                console.error('Error loading more videos:', error);
+                isLoading = false;
+                document.getElementById('loadingSpinner').classList.remove('show');
+            });
+        }
+
+        // Scroll detection for lazy loading
+        const reelContainer = document.getElementById('reelContainer');
+        reelContainer.addEventListener('scroll', () => {
+            const { scrollTop, scrollHeight, clientHeight } = reelContainer;
+            
+            // Load more videos when user is near the bottom (within 200px)
+            if (scrollHeight - scrollTop - clientHeight < 200 && hasMore && !isLoading) {
+                loadMoreVideos();
+            }
+        });
+
+        // Initialize existing videos
+        initializeVideos();
+
+        // Pause all videos initially
+        document.querySelectorAll("video").forEach(video => {
+            video.pause();
+            video.muted = true;
+        });
+    </script>
 </body>
-
 </html>
