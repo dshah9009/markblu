@@ -41,7 +41,7 @@
             box-sizing: border-box;
         }
 
-        body {
+        /* body {
             font-family: 'Roboto', sans-serif;
             background: #000;
             color: #fff;
@@ -50,7 +50,15 @@
             position: fixed;
             width: 100%;
             height: 100%;
+        } */
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #000;
+            color: #fff;
+            margin: 0;
         }
+
 
         .reel-container {
             height: 100vh;
@@ -402,12 +410,18 @@
     </div>
 
     <script>
+        function setReelHeights() {
+            const vh = window.innerHeight;
+            document.querySelectorAll('.reel').forEach(el => { el.style.height = vh + 'px'; });
+        }
+        window.addEventListener('resize', setReelHeights);
+        window.addEventListener('load', setReelHeights);
         // OPTIMIZED VIDEO LOADING SYSTEM
         let isMuted = true;
         let isLoading = false;
         let hasMore = {{ has_more|yesno:"true,false" }};
 
-        let nextPage = "{{ video.project_name|default:"-" }}";
+        let nextPage = "{{ video.project_name|default:" - " }}";
 
 
         let currentVideoIndex = 0;
