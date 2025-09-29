@@ -229,6 +229,8 @@ def edit_video(request, video_id):
 @login_required
 def delete_video(request, video_id):
     video = get_object_or_404(PropertyVideo, id=video_id, agent__user=request.user)
+    if video.video:
+        video.video.delete(save=False)
     video.delete()
     messages.success(request, "Property deleted successfully.")
     return redirect('agent-dashboard')

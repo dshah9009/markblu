@@ -2,42 +2,42 @@ from django.db import models
 from django.contrib.auth.models import User
 from multiselectfield import MultiSelectField
 
-
 def agent_logo_upload_path(instance, filename):
     return f"agent_logo/{instance.user.username}/{filename}"
 
 DEAL = [
-    ('All','All'),
-    ('Plot','Plot'),
-    ('Flat','Flat'),
-    ('Raw House','Row House'),
-    
+    ('All', 'All'),
+    ('Plot', 'Plot'),
+    ('Flat', 'Flat'),
+    ('Raw House', 'Row House'),
 ]
+
 class DealType(models.Model):
     name = models.CharField(max_length=50)
-
+    
     def __str__(self):
         return self.name
 
 class AgentProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    mobile = models.CharField(max_length=10)
-    company_name = models.CharField(max_length= 100, blank= True, null = True)
+    mobile = models.CharField(max_length=10, db_index=True)  # Added index
+    company_name = models.CharField(max_length=100, blank=True, null=True)
     office_address = models.TextField()
     project_location = models.CharField(max_length=100)
     experience = models.IntegerField()
     deal = models.ManyToManyField(DealType)
-    company_logo = models.ImageField(upload_to=agent_logo_upload_path,blank = True, null = True)
-    company_rera_id = models.CharField(max_length=50, blank= True, null = True)
-    role = models.CharField( max_length= 10, default= 'Agent')
-
+    company_logo = models.ImageField(upload_to=agent_logo_upload_path, blank=True, null=True)
+    company_rera_id = models.CharField(max_length=50, blank=True, null=True)
+    role = models.CharField(max_length=10, default='Agent')
+    
     def __str__(self):
         return self.user.username
-    
+
 PROPERTY_TYPES = [
     ('Buy', 'Buy'),
     ('Rent', 'Rent'),
 ]
+
 PROPERTIES = [
     ('Plots & Houses', [
         ('Plot', 'Plot'),
@@ -55,6 +55,7 @@ PROPERTIES = [
         ('Showroom', 'Showroom'),
     ]),
 ]
+
 rera_approval = [
     ('Approved', 'Approved'),
     ('Pending', 'Pending'),
@@ -66,7 +67,7 @@ class PropertyVideo(models.Model):
     area = models.CharField(max_length=150)
     price = models.IntegerField()
     property_type = models.CharField(max_length=10, choices=PROPERTY_TYPES)
-    properties = models.CharField(max_length=10 , choices=PROPERTIES)
+    properties = models.CharField(max_length=10, choices=PROPERTIES)
     project_name = models.CharField(max_length=100, blank=True, null=True)
     guideline_per_sqft = models.IntegerField()
     token_amount = models.DecimalField(max_digits=10, decimal_places=2)
@@ -76,9 +77,20 @@ class PropertyVideo(models.Model):
     video = models.FileField(upload_to='property_videos/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
     processing = models.BooleanField(default=False)
-
-
-
+    
+    class Meta:
+        # Composite indexes for common query patterns
+        indexes = [
+            models.Index(fields=['-uploaded_at'], name='idx_uploaded_at'),
+            models.Index(fields=['city', 'area'], name='idx_city_area'),
+            models.Index(fields=['property_type'], name='idx_property_type'),
+            models.Index(fields=['city', 'property_type'], name='idx_city_type'),
+            models.Index(fields=['price'], name='idx_price'),
+            models.Index(fields=['agent', '-uploaded_at'], name='idx_agent_upload'),
+            models.Index(fields=['city', 'area', 'property_type'], name='idx_full_filter'),
+        ]
+        ordering = ['-uploaded_at']  # Default ordering
+    
     def __str__(self):
         return f"{self.city} - {self.area} - {self.property_type}"
 
@@ -87,6 +99,7 @@ class ContactLog(models.Model):
         ('WhatsApp', 'WhatsApp'),
         ('Call', 'Call'),
     ]
+    
     agent = models.ForeignKey('AgentProfile', on_delete=models.CASCADE)
     agent_mobile = models.CharField(max_length=15)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
@@ -94,6 +107,14 @@ class ContactLog(models.Model):
     video = models.ForeignKey('PropertyVideo', on_delete=models.CASCADE)
     contact_type = models.CharField(max_length=10, choices=CONTACT_TYPE_CHOICES)
     contact_datetime = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        indexes = [
+            models.Index(fields=['agent', '-contact_datetime'], name='idx_agent_contact'),
+            models.Index(fields=['user', '-contact_datetime'], name='idx_user_contact'),
+            models.Index(fields=['-contact_datetime'], name='idx_contact_time'),
+        ]
+        ordering = ['-contact_datetime']
+    
     def __str__(self):
         return f"{self.user} ➔ {self.agent} ({self.contact_type})"
-

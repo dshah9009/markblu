@@ -3,15 +3,26 @@
 
 {% for video in videos %}
 {% if not video.processing %}
-<div class="reel">
-    <!-- 🎥 Video -->
-    <video autoplay loop playsinline muted>
-        <source src="{{ video.video.url }}" type="video/mp4" />
+<div class="reel" data-video-id="{{ video.id }}">
+    <!-- 🎥 Video with lazy loading -->
+    <video 
+        class="reel-video"
+        loop 
+        playsinline 
+        muted
+        preload="none"
+        data-src="{{ video.video.url }}">
+        <source data-src="{{ video.video.url }}" type="video/mp4" />
         Your browser does not support the video tag.
     </video>
 
+    <!-- Loading spinner -->
+    <div class="video-loading absolute inset-0 flex items-center justify-center bg-gray-900">
+        <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-white"></div>
+    </div>
+
     <!-- 🔈 Mute/Unmute Status Icon -->
-    <div class="mute-status-icon absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white z-50 text-5xl pointer-events-none">
+    <div class="mute-status-icon absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white z-50 text-5xl pointer-events-none opacity-0">
         <span class="material-icons">volume_off</span>
     </div>
 
@@ -53,12 +64,13 @@
             </span>
         </div>
         
+        
         <div class="space-y-1">
             {% if video.agent.company_name %}
                 <p><strong>Company:</strong> {{ video.agent.company_name }}</p>
             {% endif %}
-            {% if video.agent.project_name %}
-                <p><strong>Project:</strong> {{ video.agent.project_name }}</p>
+            {% if video.project_name %}
+                <p><strong>Project:</strong> {{ video.project_name }}</p>
             {% endif %}
             <p><strong>Price:</strong> ₹{{ video.price|format_inr }}</p>
             <p><strong>guideline:</strong> ₹{{ video.guideline_per_sqft }}/sqft</p>
@@ -100,3 +112,69 @@
 </div>
 {% endif %}
 {% endfor %}
+
+<script>
+// Lazy load videos when they come into view
+document.addEventListener('DOMContentLoaded', function() {
+    const videoObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            const video = entry.target.querySelector('.reel-video');
+            const loader = entry.target.querySelector('.video-loading');
+            const source = video.querySelector('source');
+            
+            if (entry.isIntersecting) {
+                // Load video when it's about to be visible
+                if (!video.src && source.dataset.src) {
+                    source.src = source.dataset.src;
+                    video.src = video.dataset.src;
+                    video.load();
+                    
+                    // Hide loader when video is ready
+                    video.addEventListener('loadeddata', () => {
+                        loader.style.display = 'none';
+                        video.play();
+                    }, { once: true });
+                } else if (video.src) {
+                    video.play();
+                }
+            } else {
+                // Pause video when out of view to save resources
+                if (video.src) {
+                    video.pause();
+                }
+            }
+        });
+    }, {
+        threshold: 0.5, // Video must be 50% visible
+        rootMargin: '200px' // Start loading 200px before entering viewport
+    });
+
+    // Observe all reels
+    document.querySelectorAll('.reel').forEach(reel => {
+        videoObserver.observe(reel);
+    });
+
+    // Handle mute/unmute on video tap
+    document.querySelectorAll('.reel-video').forEach(video => {
+        video.addEventListener('click', function(e) {
+            e.preventDefault();
+            const muteIcon = this.closest('.reel').querySelector('.mute-status-icon');
+            const icon = muteIcon.querySelector('.material-icons');
+            
+            if (this.muted) {
+                this.muted = false;
+                icon.textContent = 'volume_up';
+            } else {
+                this.muted = true;
+                icon.textContent = 'volume_off';
+            }
+            
+            // Show icon briefly
+            muteIcon.style.opacity = '1';
+            setTimeout(() => {
+                muteIcon.style.opacity = '0';
+            }, 500);
+        });
+    });
+});
+</script>
