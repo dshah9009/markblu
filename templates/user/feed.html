@@ -2,20 +2,21 @@
 {% load price_filters %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <!-- Google Tag Manager -->
     <script>(function (w, d, s, l, i) {
-        w[l] = w[l] || [];
-        w[l].push({
-            'gtm.start': new Date().getTime(), event: 'gtm.js'
-        });
-        var f = d.getElementsByTagName(s)[0],
-            j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
-        j.async = true;
-        j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-        f.parentNode.insertBefore(j, f);
-    })(window, document, 'script', 'dataLayer', 'GTM-5ZJBL5FL');</script>
+            w[l] = w[l] || [];
+            w[l].push({
+                'gtm.start': new Date().getTime(), event: 'gtm.js'
+            });
+            var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
+            j.async = true;
+            j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+            f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-5ZJBL5FL');</script>
     <!-- End Google Tag Manager -->
 
     <script type="text/javascript">
@@ -60,9 +61,10 @@
             -webkit-overflow-scrolling: touch;
             overscroll-behavior-y: contain;
             position: relative;
+            will-change: scroll-position;
+            transform: translateZ(0);
         }
 
-        /* Hide scrollbar but keep functionality */
         .reel-container::-webkit-scrollbar {
             display: none;
         }
@@ -82,6 +84,7 @@
             align-items: flex-end;
             justify-content: center;
             overflow: hidden;
+            background: #000;
         }
 
         .reel video {
@@ -91,11 +94,41 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-            transform: translateY(-70px);
+            transform: translateY(-70px) translateZ(0);
             background-color: #000;
             z-index: 0;
             cursor: pointer;
             pointer-events: auto;
+            will-change: transform;
+            backface-visibility: hidden;
+        }
+
+        /* Video loading state */
+        .video-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+        }
+
+        .video-loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .top-left-info {
@@ -108,7 +141,7 @@
             line-height: 1.5;
             max-width: 75%;
             word-wrap: break-word;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
         }
 
         .reel-content {
@@ -162,13 +195,6 @@
             margin-bottom: 4px;
         }
 
-        .message {
-            padding: 1rem;
-            text-align: center;
-            background: #1f2937;
-            color: #d1d5db;
-        }
-
         .mute-status-icon {
             position: absolute;
             top: 50%;
@@ -195,7 +221,6 @@
             color: white;
         }
 
-        /* Logo positioning */
         .logo-container {
             position: fixed;
             top: 1rem;
@@ -203,7 +228,6 @@
             z-index: 50;
         }
 
-        /* Bottom navigation */
         .bottom-navigation {
             position: fixed;
             bottom: 0;
@@ -221,6 +245,16 @@
             padding: 0.75rem;
             max-width: 28rem;
             margin: 0 auto;
+        }
+
+        .nav-button.filter {
+            background: #ffffff;
+            color: #1d4ed8;
+            border: 1px solid #1d4ed8;
+        }
+
+        .nav-button.filter:hover {
+            background: #e0e7ff;
         }
 
         .nav-button {
@@ -253,7 +287,6 @@
             background: linear-gradient(to right, #1e40af, #2563eb);
         }
 
-        /* Loading spinner */
         .loading-spinner {
             display: none;
             position: fixed;
@@ -276,22 +309,6 @@
             animation: spin 2s linear infinite;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Touch handling improvements */
-        .reel-container {
-            touch-action: pan-y;
-        }
-
-        /* Prevent bouncing on iOS */
-        html, body {
-            overscroll-behavior: none;
-        }
-
-        /* Smooth scroll indicator */
         .scroll-indicator {
             position: fixed;
             bottom: calc(5rem + env(safe-area-inset-bottom));
@@ -306,12 +323,19 @@
         }
 
         @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
                 transform: translateX(-50%) translateY(0);
             }
+
             40% {
                 transform: translateX(-50%) translateY(-10px);
             }
+
             60% {
                 transform: translateX(-50%) translateY(-5px);
             }
@@ -320,87 +344,116 @@
         .scroll-indicator.hide {
             opacity: 0;
         }
+
+        html,
+        body {
+            overscroll-behavior: none;
+        }
+
+        .reel-container {
+            touch-action: pan-y;
+        }
     </style>
 </head>
 
 <body>
     <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5ZJBL5FL" 
-                     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5ZJBL5FL" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
 
     {% if no_results %}
-    <div class="fixed top-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-60 text-white text-sm px-4 py-2 rounded-md z-50">
+    <div
+        class="fixed top-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-60 text-white text-sm px-4 py-2 rounded-md z-50">
         No exact matches found. Showing similar properties:
     </div>
     {% endif %}
 
-    <!-- MarkBlu Logo -->
     <div class="logo-container">
         <img src="{% static 'images/markblu-logo.png' %}" alt="MarkBlu Logo" class="h-10 w-auto">
     </div>
 
-    <!-- Scroll Indicator -->
     <div class="scroll-indicator" id="scrollIndicator">
         <span class="material-icons">expand_more</span>
     </div>
 
-    <!-- Loading Spinner -->
     <div class="loading-spinner" id="loadingSpinner">
         <div class="spinner"></div>
     </div>
 
-    <!-- Main Reel Container -->
     <div class="reel-container" id="reelContainer">
-        <!-- Initial videos -->
         {% include 'user/video_items.html' with videos=videos %}
     </div>
 
-    <!-- Bottom Navigation -->
     <div class="bottom-navigation">
         <div class="nav-container">
-            <!-- Buy Button -->
-            <a href="{% url 'user-filter-by-button' 'Buy' %}" 
-               class="nav-button {% if request.GET.property_type == 'Buy' %}active{% else %}inactive{% endif %}">
+            <a href="{% url 'user-filter-by-button' 'Buy' %}"
+                class="nav-button {% if request.GET.property_type == 'Buy' %}active{% else %}inactive{% endif %}">
                 Buy
             </a>
-
-            <!-- Rent Button -->
-            <a href="{% url 'user-filter-by-button' 'Rent' %}" 
-               class="nav-button {% if request.GET.property_type == 'Rent' %}active{% else %}inactive{% endif %}">
+            <a href="{% url 'user-filter-by-button' 'Rent' %}"
+                class="nav-button {% if request.GET.property_type == 'Rent' %}active{% else %}inactive{% endif %}">
                 Rent
             </a>
-
-            <!-- Filter Button -->
-            <a href="{% url 'filter' %}" 
-               class="nav-button active">
-                Filter
+            <a href="{% url 'filter' %}" class="nav-button filter">
+                Filter by <i class="fa-solid fa-chevron-down"></i>
             </a>
         </div>
     </div>
 
     <script>
-        // Global variables
+        // OPTIMIZED VIDEO LOADING SYSTEM
         let isMuted = true;
         let isLoading = false;
         let hasMore = {{ has_more|yesno:"true,false" }};
-        let nextPage = {{ next_page|default:"null" }};
+
+        let nextPage = "{{ video.project_name|default:"-" }}";
+
+
         let currentVideoIndex = 0;
         let isScrolling = false;
         let scrollTimeout;
-        let touchStartY = 0;
-        let touchEndY = 0;
         const currentUrl = new URL(window.location.href);
+        const loadedVideos = new Set();
 
-        // Mute icon display
-        function showMuteIcon(video, muted) {
-            // Remove any existing mute icons
-            document.querySelectorAll('.mute-status-icon').forEach(icon => {
-                if (icon !== video.parentElement.querySelector('.mute-status-icon')) {
-                    icon.remove();
+        // Lazy load video when it comes into view
+        function lazyLoadVideo(video, reel) {
+            const source = video.querySelector('source');
+            const loader = reel.querySelector('.video-loading');
+
+            if (!source || video.dataset.loaded === 'true') return;
+
+            const videoSrc = source.dataset.src || source.src;
+            if (!videoSrc) return;
+
+            // Mark as loading
+            video.dataset.loaded = 'true';
+
+            // Set source and load
+            source.src = videoSrc;
+            video.src = videoSrc;
+            video.load();
+
+            video.addEventListener('loadeddata', () => {
+                if (loader) loader.style.display = 'none';
+                // Auto-play if it's the current video
+                const index = parseInt(video.dataset.index);
+                if (index === currentVideoIndex) {
+                    video.muted = isMuted;
+                    video.play().catch(err => console.log('Play error:', err));
                 }
-            });
+            }, { once: true });
 
+            video.addEventListener('error', () => {
+                console.error('Video load error');
+                if (loader) {
+                    loader.innerHTML = '<p class="text-white text-sm">Failed to load video</p>';
+                }
+            }, { once: true });
+        }
+
+        // Show mute icon
+        function showMuteIcon(video, muted) {
             let icon = video.parentElement.querySelector('.mute-status-icon');
             if (!icon) {
                 icon = document.createElement('div');
@@ -410,43 +463,43 @@
 
             icon.innerHTML = `<span class="material-icons">${muted ? 'volume_off' : 'volume_up'}</span>`;
             icon.classList.add('show');
-            
-            setTimeout(() => {
-                icon.classList.remove('show');
-            }, 1000);
+            setTimeout(() => icon.classList.remove('show'), 1000);
         }
 
-        // Initialize video behavior
+        // Initialize video
         function initializeVideo(video, index) {
-            // Add click event for mute/unmute
+            video.setAttribute('data-index', index);
+
             video.addEventListener('click', (e) => {
                 e.stopPropagation();
-                isMuted = !isMuted;
-                video.muted = isMuted;
-                showMuteIcon(video, isMuted);
+                isMuted = !isMuted; // toggle global mute state
+
+                // Apply to all videos
+                document.querySelectorAll('video').forEach(v => {
+                    v.muted = isMuted;
+
+                    // Show mute icon on each video
+                    showMuteIcon(v, isMuted);
+                });
             });
 
-            // Set initial muted state
+
             video.muted = true;
-            
-            // Add data attribute for tracking
-            video.setAttribute('data-index', index);
         }
 
-        // Initialize all videos
-        function initializeVideos() {
-            const videos = document.querySelectorAll('video');
-            videos.forEach((video, index) => {
-                initializeVideo(video, index);
-                observer.observe(video);
-            });
-        }
-
-        // Intersection Observer for video playback
-        const observer = new IntersectionObserver((entries) => {
+        // Intersection Observer for lazy loading and playback
+        const videoObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                const video = entry.target;
+                const reel = entry.target;
+                const video = reel.querySelector('video');
+                if (!video) return;
+
                 if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+                    // Lazy load if not loaded
+                    if (video.dataset.loaded !== 'true') {
+                        lazyLoadVideo(video, reel);
+                    }
+
                     // Pause all other videos
                     document.querySelectorAll('video').forEach(v => {
                         if (v !== video) {
@@ -456,41 +509,72 @@
                     });
 
                     // Play current video
-                    video.muted = isMuted;
-                    video.play().catch(err => {
-                        console.error('Autoplay error:', err);
-                        // Retry with muted if failed
-                        video.muted = true;
-                        video.play().catch(e => console.error('Retry failed:', e));
-                    });
+                    if (video.src) {
+                        video.muted = isMuted;
+                        video.play().catch(err => {
+                            console.error('Autoplay error:', err);
+                            video.muted = true;
+                            video.play().catch(e => console.error('Retry failed:', e));
+                        });
+                    }
 
-                    // Update current index
                     currentVideoIndex = parseInt(video.getAttribute('data-index'));
-                    
-                    // Hide scroll indicator after first scroll
+
                     if (currentVideoIndex > 0) {
                         document.getElementById('scrollIndicator').classList.add('hide');
                     }
                 } else {
-                    video.pause();
+                    if (video.src) video.pause();
                 }
             });
-        }, { 
-            threshold: [0.5, 0.7, 0.9],
-            rootMargin: '0px'
+        }, {
+            threshold: [0.5, 0.7],
+            rootMargin: '300px 0px' // Preload videos 300px before visible
         });
 
-        // Smooth scroll to specific video
+        // Preload observer for upcoming videos
+        const preloadObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const reel = entry.target;
+                    const video = reel.querySelector('video');
+                    if (video && video.dataset.loaded !== 'true') {
+                        lazyLoadVideo(video, reel);
+                    }
+                }
+            });
+        }, {
+            rootMargin: '500px 0px' // Preload 500px ahead
+        });
+
+        // Initialize all videos
+        function initializeVideos() {
+            const reels = document.querySelectorAll('.reel');
+            reels.forEach((reel, index) => {
+                const video = reel.querySelector('video');
+                if (video) {
+                    initializeVideo(video, index);
+                    videoObserver.observe(reel);
+                    preloadObserver.observe(reel);
+
+                    // Load first 2 videos immediately
+                    if (index < 2) {
+                        lazyLoadVideo(video, reel);
+                    }
+                }
+            });
+        }
+
+        // Smooth scroll to video
         function scrollToVideo(index) {
             const reels = document.querySelectorAll('.reel');
             if (reels[index]) {
                 isScrolling = true;
-                reels[index].scrollIntoView({ 
+                reels[index].scrollIntoView({
                     behavior: 'smooth',
                     block: 'start'
                 });
-                
-                // Reset scrolling flag after animation
+
                 clearTimeout(scrollTimeout);
                 scrollTimeout = setTimeout(() => {
                     isScrolling = false;
@@ -498,12 +582,11 @@
             }
         }
 
-        // Handle keyboard navigation
+        // Keyboard navigation
         document.addEventListener('keydown', (e) => {
             if (isScrolling) return;
-            
             const videos = document.querySelectorAll('.reel');
-            
+
             if (e.key === 'ArrowDown' && currentVideoIndex < videos.length - 1) {
                 e.preventDefault();
                 scrollToVideo(currentVideoIndex + 1);
@@ -513,11 +596,9 @@
             }
         });
 
-        // Improved touch handling for mobile
-        let touchStartTime = 0;
-        const SWIPE_THRESHOLD = 50;
-        const TIME_THRESHOLD = 300;
-
+        // Touch handling
+        let touchStartY = 0, touchStartTime = 0;
+        const SWIPE_THRESHOLD = 50, TIME_THRESHOLD = 300;
         const reelContainer = document.getElementById('reelContainer');
 
         reelContainer.addEventListener('touchstart', (e) => {
@@ -527,36 +608,31 @@
 
         reelContainer.addEventListener('touchend', (e) => {
             if (isScrolling) return;
-            
-            touchEndY = e.changedTouches[0].clientY;
+
+            const touchEndY = e.changedTouches[0].clientY;
             const touchDuration = Date.now() - touchStartTime;
             const swipeDistance = touchStartY - touchEndY;
-            
-            // Quick swipe detection
+
             if (touchDuration < TIME_THRESHOLD && Math.abs(swipeDistance) > SWIPE_THRESHOLD) {
                 const videos = document.querySelectorAll('.reel');
-                
+
                 if (swipeDistance > 0 && currentVideoIndex < videos.length - 1) {
-                    // Swipe up - next video
                     scrollToVideo(currentVideoIndex + 1);
                 } else if (swipeDistance < 0 && currentVideoIndex > 0) {
-                    // Swipe down - previous video
                     scrollToVideo(currentVideoIndex - 1);
                 }
             }
         }, { passive: true });
 
-        // Prevent overscroll on boundaries
+        // Load more videos
         reelContainer.addEventListener('scroll', () => {
             const { scrollTop, scrollHeight, clientHeight } = reelContainer;
-            
-            // Load more videos when near bottom
-            if (scrollHeight - scrollTop - clientHeight < 200 && hasMore && !isLoading) {
+
+            if (scrollHeight - scrollTop - clientHeight < 300 && hasMore && !isLoading) {
                 loadMoreVideos();
             }
         }, { passive: true });
 
-        // Load more videos function
         function loadMoreVideos() {
             if (isLoading || !hasMore) return;
 
@@ -566,87 +642,90 @@
             currentUrl.searchParams.set('page', nextPage);
 
             fetch(currentUrl.toString(), {
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                },
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
             })
-            .then(response => response.json())
-            .then(data => {
-                const container = document.getElementById('reelContainer');
-                const currentVideoCount = document.querySelectorAll('.reel').length;
-                
-                // Append new videos
-                container.insertAdjacentHTML('beforeend', data.videos_html);
-                
-                // Initialize new videos
-                const newVideos = document.querySelectorAll('.reel');
-                for (let i = currentVideoCount; i < newVideos.length; i++) {
-                    const video = newVideos[i].querySelector('video');
-                    if (video) {
-                        initializeVideo(video, i);
-                        observer.observe(video);
+                .then(response => response.json())
+                .then(data => {
+                    const container = document.getElementById('reelContainer');
+                    const currentVideoCount = document.querySelectorAll('.reel').length;
+
+                    container.insertAdjacentHTML('beforeend', data.videos_html);
+
+                    const newReels = document.querySelectorAll('.reel');
+                    for (let i = currentVideoCount; i < newReels.length; i++) {
+                        const reel = newReels[i];
+                        const video = reel.querySelector('video');
+                        if (video) {
+                            initializeVideo(video, i);
+                            videoObserver.observe(reel);
+                            preloadObserver.observe(reel);
+                        }
                     }
-                }
 
-                // Update pagination info
-                hasMore = data.has_more;
-                nextPage = data.next_page;
+                    hasMore = data.has_more;
+                    nextPage = data.next_page;
 
-                isLoading = false;
-                document.getElementById('loadingSpinner').classList.remove('show');
-            })
-            .catch(error => {
-                console.error('Error loading more videos:', error);
-                isLoading = false;
-                document.getElementById('loadingSpinner').classList.remove('show');
-            });
+                    isLoading = false;
+                    document.getElementById('loadingSpinner').classList.remove('show');
+                })
+                .catch(error => {
+                    console.error('Error loading more videos:', error);
+                    isLoading = false;
+                    document.getElementById('loadingSpinner').classList.remove('show');
+                });
         }
 
-        // Prevent pull-to-refresh on mobile
+        // Prevent pull-to-refresh
         let lastY = 0;
         reelContainer.addEventListener('touchmove', (e) => {
             const currentY = e.touches[0].clientY;
             const scrollTop = reelContainer.scrollTop;
-            
+
             if (scrollTop === 0 && currentY > lastY) {
-                // Prevent pull-to-refresh when at top
                 e.preventDefault();
             }
-            
             lastY = currentY;
         }, { passive: false });
 
-        // Initialize on page load
+        // Initialize on load
         document.addEventListener('DOMContentLoaded', () => {
             initializeVideos();
-            
-            // Play first video
-            const firstVideo = document.querySelector('video');
-            if (firstVideo) {
-                firstVideo.muted = true;
-                firstVideo.play().catch(err => {
-                    console.error('Initial autoplay error:', err);
-                });
-            }
         });
 
-        // Handle visibility change (when app goes to background/foreground)
+        // Handle visibility change
         document.addEventListener('visibilitychange', () => {
             const videos = document.querySelectorAll('video');
             if (document.hidden) {
-                // Pause all videos when app is hidden
                 videos.forEach(video => video.pause());
             } else {
-                // Resume current video when app is visible
                 const currentReel = document.querySelectorAll('.reel')[currentVideoIndex];
                 if (currentReel) {
                     const video = currentReel.querySelector('video');
-                    if (video) {
+                    if (video && video.src) {
                         video.play().catch(err => console.error('Resume play error:', err));
                     }
                 }
             }
         });
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Restore scroll if saved
+            const scrollPos = sessionStorage.getItem('scrollPos');
+            if (scrollPos) {
+                window.scrollTo(0, parseInt(scrollPos));
+                sessionStorage.removeItem('scrollPos');
+            }
+
+            // Save scroll before clicking on details
+            document.querySelectorAll('.reel a').forEach(link => {
+                link.addEventListener('click', () => {
+                    sessionStorage.setItem('scrollPos', window.scrollY);
+                });
+            });
+        });
+    </script>
+
 </body>
+
 </html>

@@ -1,4 +1,4 @@
-from django.db.models import Value
+from django.db.models import Value, Prefetch
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from .models_agent import PropertyVideo, ContactLog
@@ -11,6 +11,8 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string
+from django.core.cache import cache
+from django.views.decorators.cache import cache_page
 
 def user_filter_page(request):
     if request.method == "POST":
@@ -22,9 +24,17 @@ def user_filter_page(request):
         query = f"?city={city}&area={area}&property_type={property_type}&properties={properties}&budget={budget}"
         return redirect('/' + query)
 
-    # Get distinct values from uploaded videos
-    cities = PropertyVideo.objects.values_list('city', flat=True).distinct()
-    areas = PropertyVideo.objects.values_list('area', flat=True).distinct()
+    # Cache filter options for 1 hour
+    cities = cache.get('filter_cities')
+    if not cities:
+        cities = list(PropertyVideo.objects.values_list('city', flat=True).distinct())
+        cache.set('filter_cities', cities, 3600)
+    
+    areas = cache.get('filter_areas')
+    if not areas:
+        areas = list(PropertyVideo.objects.values_list('area', flat=True).distinct())
+        cache.set('filter_areas', areas, 3600)
+    
     properties_choices = PropertyVideo._meta.get_field('properties').choices
     budget_ranges = [
         ("0-1000000", "Below ₹10 Lakh"),
@@ -42,12 +52,21 @@ def user_filter_page(request):
     })
 
 def property_filter_view(request):
-    # Get distinct values for dropdowns
-    cities = PropertyVideo.objects.values_list('city', flat=True).distinct()
-    areas = PropertyVideo.objects.values_list('area', flat=True).distinct()
-    property_types = PropertyVideo.objects.values_list('property_type', flat=True).distinct()
+    # Cache distinct values for dropdowns (1 hour cache)
+    cities = cache.get('property_cities')
+    if not cities:
+        cities = list(PropertyVideo.objects.values_list('city', flat=True).distinct())
+        cache.set('property_cities', cities, 3600)
     
-    videos = PropertyVideo.objects.all()
+    areas = cache.get('property_areas')
+    if not areas:
+        areas = list(PropertyVideo.objects.values_list('area', flat=True).distinct())
+        cache.set('property_areas', areas, 3600)
+    
+    property_types = cache.get('property_types')
+    if not property_types:
+        property_types = list(PropertyVideo.objects.values_list('property_type', flat=True).distinct())
+        cache.set('property_types', property_types, 3600)
     
     if request.method == 'GET':
         city = request.GET.get('city')
@@ -71,20 +90,28 @@ def property_filter_view(request):
             filters["properties"] = properties
         if budget:
             try:
-                budget_value = int(budget) * 10000  # Convert slider value to ₹
+                budget_value = int(budget) * 10000
                 if budget_value > 0:
                     filters["price__lte"] = budget_value
             except:
                 pass
         
-        videos = PropertyVideo.objects.filter(**filters).order_by('-uploaded_at')
+        # Optimize query with select_related and only fetch needed fields for listing
+        videos = PropertyVideo.objects.filter(**filters).select_related(
+            'agent', 'agent__user'
+        ).only(
+            'id', 'city', 'area', 'price', 'property_type', 'properties',
+            'video', 'uploaded_at', 'property_size_sqft', 'project_name',
+            'agent__id', 'agent__company_name', 'agent__mobile', 'agent__user__first_name',
+            'agent__user__last_name'
+        ).order_by('-uploaded_at')
         
         no_results = False
         if not videos.exists() and property_type:
             no_results = True
         
-        # Pagination - 3 videos per page
-        paginator = Paginator(videos, 3)
+        # Pagination - increased to 6 videos per page for better performance
+        paginator = Paginator(videos, 6)
         page_obj = paginator.get_page(page)
         
         # Check if this is an AJAX request
@@ -94,7 +121,6 @@ def property_filter_view(request):
                 'request': request,
                 'user': request.user
             })
-            print(page_obj)
             return JsonResponse({
                 'videos_html': videos_html,
                 'has_more': page_obj.has_next(),
@@ -148,12 +174,17 @@ def user_login(request):
 
 @login_required
 def log_call_and_redirect(request, video_id):
-    video = get_object_or_404(PropertyVideo, id=video_id)
+    video = get_object_or_404(
+        PropertyVideo.objects.select_related('agent'), 
+        id=video_id
+    )
     ContactLog.objects.create(
         agent=video.agent,
         user=request.user,
         video=video,
-        contact_type='Call'
+        contact_type='Call',
+        agent_mobile=video.agent.mobile,
+        user_mobile=getattr(request.user.userprofile, 'mobile', '')
     )
     return render(request, 'user/call_redirect.html', {
         'agent_mobile': video.agent.mobile
@@ -161,12 +192,17 @@ def log_call_and_redirect(request, video_id):
 
 @login_required
 def log_whatsapp_and_redirect(request, video_id):
-    video = get_object_or_404(PropertyVideo, id=video_id)
+    video = get_object_or_404(
+        PropertyVideo.objects.select_related('agent'), 
+        id=video_id
+    )
     ContactLog.objects.create(
         agent=video.agent,
         user=request.user,
         video=video,
-        contact_type='WhatsApp'
+        contact_type='WhatsApp',
+        agent_mobile=video.agent.mobile,
+        user_mobile=getattr(request.user.userprofile, 'mobile', '')
     )
     mobile = video.agent.mobile
     city = video.city
@@ -176,23 +212,49 @@ def log_whatsapp_and_redirect(request, video_id):
     return redirect(whatsapp_url)
 
 def detail_view(request, video_id):
-    video = get_object_or_404(PropertyVideo, id=video_id)
-    agent = video.agent
-    from_url = request.GET.get('from', reverse('feed'))  # fallback to feed if not provided
-    agent_videos = PropertyVideo.objects.filter(agent=agent).exclude(id=video.id)
+    # Load the video with its agent
+    video = get_object_or_404(PropertyVideo, pk=video_id)
+    agent_videos = PropertyVideo.objects.filter(agent=video.agent).exclude(pk=video_id)
+
+    # Capture the feed URL to return back
+    from_url = request.GET.get('from', '/')
+
     return render(request, 'user/details.html', {
         'video': video,
-        'agent': agent,
+        'agent': video.agent,
+        'agent_videos': agent_videos,
         'from_url': from_url,
-        'agent_videos': agent_videos
     })
+
+# def detail_view(request, video_id):
+#     video = get_object_or_404(
+#         PropertyVideo.objects.select_related('agent', 'agent__user'), 
+#         id=video_id
+#     )
+#     agent = video.agent
+#     from_url = request.GET.get('from', reverse('feed'))
+    
+#     # Optimize agent videos query
+#     agent_videos = PropertyVideo.objects.filter(
+#         agent=agent
+#     ).exclude(
+#         id=video.id
+#     ).select_related('agent').only(
+#         'id', 'city', 'area', 'price', 'property_type', 
+#         'video', 'property_size_sqft', 'project_name'
+#     )[:6]  # Limit to 6 related videos
+    
+#     return render(request, 'user/details.html', {
+#         'video': video,
+#         'agent': agent,
+#         'from_url': from_url,
+#         'agent_videos': agent_videos
+#     })
 
 def custom_404(request, exception):
     return render(request, 'user/404.html', status=404)
 
 from django.contrib.auth import login, get_user_model
-from django.shortcuts import render, redirect
-from .models import UserProfile
 
 User = get_user_model()
 
@@ -206,7 +268,7 @@ def mobile_login(request):
 
         # try to find user by mobile
         try:
-            profile = UserProfile.objects.get(mobile=mobile)
+            profile = UserProfile.objects.select_related('user').get(mobile=mobile)
             user = profile.user
         except UserProfile.DoesNotExist:
             # create user + profile if not found
@@ -226,7 +288,6 @@ def user_filter_by_button(request, filter_type):
     Redirects to feed page with property_type applied.
     """
     if filter_type not in ["Buy", "Rent"]:
-        return redirect("feed")  # fallback if wrong input
+        return redirect("feed")
 
-    # Redirect with property_type in query params
     return redirect(f"{reverse('feed')}?property_type={filter_type}")
